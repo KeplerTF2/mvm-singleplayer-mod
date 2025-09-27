@@ -13,7 +13,13 @@
 #include "econ_item_system.h"
 #include "tf_gamerules.h"
 #include "tf_item_powerup_bottle.h"
+#include "tf_weaponbase_gun.h"
 
+#include "tf_weaponbase_melee.h"
+#include "tf_wearable_weapons.h"
+#include "tf_weapon_buff_item.h"
+#include "tf_weapon_flamethrower.h"
+#include "tf_weapon_medigun.h"
 
 CMannVsMachineUpgradeManager g_MannVsMachineUpgrades;
 
@@ -36,6 +42,7 @@ void CMannVsMachineUpgradeManager::LevelInitPostEntity()
 void CMannVsMachineUpgradeManager::LevelShutdownPostEntity()
 {
 	m_Upgrades.RemoveAll();
+	m_UpgradeGroups.RemoveAll();
 }
 
 //-----------------------------------------------------------------------------
@@ -97,7 +104,458 @@ void CMannVsMachineUpgradeManager::ParseUpgradeBlockForUIGroup( KeyValues *pKV, 
 		m_Upgrades[ index ].nUIGroup = pData->GetInt( "ui_group", iDefaultUIGroup );
 		m_Upgrades[ index ].nQuality = pData->GetInt( "quality", MVM_UPGRADE_QUALITY_NORMAL );
 		m_Upgrades[ index ].nTier = pData->GetInt( "tier", 0 );
+		V_strncpy( m_Upgrades[index].szGroup, pData->GetString( "group", "default" ), sizeof( m_Upgrades[index].szGroup ) );
+		m_Upgrades[ index ].flMult = pData->GetFloat( "mult", 1.f );
+		m_Upgrades[ index ].flCostMult = pData->GetFloat( "cost_mult", 1.f );
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CMannVsMachineUpgradeManager::ParseUpgradeGroupBlock( KeyValues *pKV )
+{
+	if ( !pKV )
+		return;
+
+	for ( KeyValues *pData = pKV->GetFirstSubKey(); pData != NULL; pData = pData->GetNextKey() )
+	{
+		int index = m_UpgradeGroups.AddToTail();
+
+		const char *pszName = pData->GetName();
+		V_strncpy( m_UpgradeGroups[ index ].szName, pszName, sizeof( m_UpgradeGroups[ index ].szName ) );
+
+		SetDefLessFunc( m_UpgradeGroups[ index ].m_ConditionMap );
+
+		for ( KeyValues* pSubData = pData->GetFirstSubKey(); pSubData != NULL; pSubData = pSubData->GetNextKey() )
+		{
+			const char *pszCondition = pSubData->GetName();
+			int iValue = pSubData->GetInt();
+
+			m_UpgradeGroups[ index ].m_ConditionMap.Insert( pszCondition, iValue );
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+bool CMannVsMachineUpgradeManager::IsAttribValid( CMannVsMachineUpgrades *pUpgrade, CTFPlayer *pPlayer, int iWeaponSlot )
+{
+	// Search for the upgrade group
+	const char* szGroupName = pUpgrade->szGroup;
+
+	// Default case
+	if ( FStrEq( szGroupName, "default" ) )
+	{
+		return true;
+	}
+
+	for ( int i = 0, nCount = m_UpgradeGroups.Count(); i < nCount; ++i )
+	{
+		if ( FStrEq( szGroupName, m_UpgradeGroups[i].szName ) )
+		{
+			// Now search that group within the upgrade group
+			bool bExclude = false; // Keeps track of values that either say its invalid if cond is true, or is only valid if everything else meets this condition (0/2)
+			bool bAllowed = false; // Does the item meet any criteria (1)
+
+			int idx = 0;
+			FOR_EACH_MAP_FAST( m_UpgradeGroups[i].m_ConditionMap, idx )
+			{
+				int iType = m_UpgradeGroups[i].m_ConditionMap[idx];
+				const char* szSubGroup = m_UpgradeGroups[i].m_ConditionMap.Key(idx);
+
+				if ( iType == 0 ) // If condition is met, attrib is invalid
+				{
+					bExclude = bExclude || GroupResult( szSubGroup, pPlayer, iWeaponSlot );
+				}
+				else if ( iType == 1 ) // If condition is met, attrib is valid
+				{
+					bAllowed = bAllowed || GroupResult( szSubGroup, pPlayer, iWeaponSlot );
+				}
+				else if ( iType == 2 ) // If condition is not met, attrib is invalid
+				{
+					bExclude = bExclude || ( !GroupResult( szSubGroup, pPlayer, iWeaponSlot ) );
+				}
+			}
+
+			return bAllowed && !bExclude;
+		}
+	}
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+bool CMannVsMachineUpgradeManager::GroupResult( const char* pszGroupName, CTFPlayer *pPlayer, int iWeaponSlot )
+{
+	if ( !pPlayer )
+		return false;
+
+	// These don't require a weapon to test
+	if ( FStrEq( pszGroupName, "default" ) )
+	{
+		return true;
+	}
+	else if ( FStrEq( pszGroupName, "scout" ) )
+	{
+		return pPlayer->IsPlayerClass( TF_CLASS_SCOUT );
+	}
+	else if ( FStrEq( pszGroupName, "soldier" ) )
+	{
+		return pPlayer->IsPlayerClass( TF_CLASS_SOLDIER );
+	}
+	else if ( FStrEq( pszGroupName, "pyro" ) )
+	{
+		return pPlayer->IsPlayerClass( TF_CLASS_PYRO );
+	}
+	else if ( FStrEq( pszGroupName, "demoman" ) )
+	{
+		return pPlayer->IsPlayerClass( TF_CLASS_DEMOMAN );
+	}
+	else if ( FStrEq( pszGroupName, "heavy" ) )
+	{
+		return pPlayer->IsPlayerClass( TF_CLASS_HEAVYWEAPONS );
+	}
+	else if ( FStrEq( pszGroupName, "engineer" ) )
+	{
+		return pPlayer->IsPlayerClass( TF_CLASS_ENGINEER );
+	}
+	else if ( FStrEq( pszGroupName, "medic" ) )
+	{
+		return pPlayer->IsPlayerClass( TF_CLASS_MEDIC );
+	}
+	else if ( FStrEq( pszGroupName, "sniper" ) )
+	{
+		return pPlayer->IsPlayerClass( TF_CLASS_SNIPER );
+	}
+	else if ( FStrEq( pszGroupName, "spy" ) )
+	{
+		return pPlayer->IsPlayerClass( TF_CLASS_SPY );
+	}
+
+	// Get the item entity. We use the entity, not the item in the loadout, because we want
+	// the dynamic attributes that have already been purchases and attached.
+	CEconEntity *pEntity;
+	CEconItemView *pCurItemData = CTFPlayerSharedUtils::GetEconItemViewByLoadoutSlot( pPlayer, iWeaponSlot, &pEntity );
+	if ( !pCurItemData || !pEntity )
+		return false;
+
+	CTFWeaponBase *pWeapon = dynamic_cast< CTFWeaponBase* > ( pEntity );
+	CTFWeaponBaseGun *pWeaponGun = dynamic_cast< CTFWeaponBaseGun* > ( pEntity );
+	int iWeaponID = ( pWeapon ) ? pWeapon->GetWeaponID() : TF_WEAPON_NONE;
+	CTFWearableDemoShield *pShield = ( pPlayer->IsPlayerClass( TF_CLASS_DEMOMAN ) ) ? dynamic_cast< CTFWearableDemoShield* >( pEntity ) : NULL;
+	bool bShield = ( pShield ) ? true : false;
+	bool bRocketPack = ( iWeaponID == TF_WEAPON_ROCKETPACK );
+
+	// Hack to simplify excluding non-weapons from damage upgrades
+	bool bHideDmgUpgrades = iWeaponID == TF_WEAPON_NONE || 
+		iWeaponID == TF_WEAPON_LASER_POINTER || 
+		iWeaponID == TF_WEAPON_MEDIGUN || 
+		iWeaponID == TF_WEAPON_BUFF_ITEM ||
+		iWeaponID == TF_WEAPON_BUILDER ||
+		iWeaponID == TF_WEAPON_PDA_ENGINEER_BUILD ||
+		iWeaponID == TF_WEAPON_INVIS ||
+		iWeaponID == TF_WEAPON_SPELLBOOK ||
+		iWeaponID == TF_WEAPON_JAR_GAS ||
+		iWeaponID == TF_WEAPON_LUNCHBOX ||
+		iWeaponID == TF_WEAPON_JAR ||
+		iWeaponID == TF_WEAPON_JAR_MILK ||
+		bRocketPack;
+
+	// Prepare for large if statement
+
+	// ---------------------------------------------
+	// Misc
+	// ---------------------------------------------
+	if ( FStrEq( pszGroupName, "damaging" ) )
+	{
+		return !bHideDmgUpgrades;
+	}
+	else if ( FStrEq( pszGroupName, "energy" ) )
+	{
+		return pWeapon && pWeapon->IsEnergyWeapon();
+	}
+	else if ( FStrEq( pszGroupName, "effect_bar" ) )
+	{
+		return pWeapon && pWeapon->HasEffectBarRegeneration();
+	}
+	else if ( FStrEq( pszGroupName, "projectile_penetrate" ) )
+	{
+		if ( pWeaponGun )
+		{
+			int iProjectile = pWeaponGun->GetWeaponProjectileType();
+			return ( iProjectile == TF_PROJECTILE_ARROW || iProjectile == TF_PROJECTILE_BULLET || iProjectile == TF_PROJECTILE_HEALING_BOLT || iProjectile == TF_PROJECTILE_FESTIVE_ARROW || iProjectile == TF_PROJECTILE_FESTIVE_HEALING_BOLT );
+		}
+		return false;
+	}
+	else if ( FStrEq( pszGroupName, "builder" ) )
+	{
+		return iWeaponID == TF_WEAPON_BUILDER;
+	}
+	else if ( FStrEq( pszGroupName, "spellbook" ) )
+	{
+		return iWeaponID == TF_WEAPON_SPELLBOOK;
+	}
+	else if ( FStrEq( pszGroupName, "jar" ) )
+	{
+		return ( iWeaponID == TF_WEAPON_JAR || iWeaponID == TF_WEAPON_JAR_MILK );
+	}
+	else if ( FStrEq( pszGroupName, "single_reload" ) )
+	{
+		return pWeapon && pWeapon->ReloadsSingly();
+	}
+	else if ( FStrEq( pszGroupName, "buff_item" ) )
+	{
+		return ( iWeaponID == TF_WEAPON_BUFF_ITEM );
+	}
+	else if ( FStrEq( pszGroupName, "meter" ) )
+	{
+		attrib_value_t eChargeType = ATTRIBUTE_METER_TYPE_NONE;
+		CALL_ATTRIB_HOOK_INT_ON_OTHER( pEntity, eChargeType, item_meter_charge_type );
+		return eChargeType != ATTRIBUTE_METER_TYPE_NONE;
+	}
+	else if ( FStrEq( pszGroupName, "parachute" ) )
+	{
+		return ( iWeaponID == TF_WEAPON_PARACHUTE );
+	}
+
+	else if ( FStrEq( pszGroupName, "primary" ) )
+	{
+		return iWeaponSlot == TF_WPN_TYPE_PRIMARY;
+	}
+	else if ( FStrEq( pszGroupName, "secondary" ) )
+	{
+		return iWeaponSlot == TF_WPN_TYPE_SECONDARY;
+	}
+	else if ( FStrEq( pszGroupName, "melee" ) )
+	{
+		return dynamic_cast< CTFWeaponBaseMelee* >( pEntity );
+	}
+
+	else if ( FStrEq( pszGroupName, "primary_ammo" ) )
+	{
+		return pWeapon && pWeapon->GetPrimaryAmmoType() == TF_AMMO_PRIMARY;
+	}
+	else if ( FStrEq( pszGroupName, "secondary_ammo" ) )
+	{
+		return pWeapon && pWeapon->GetPrimaryAmmoType() == TF_AMMO_SECONDARY;
+	}
+	else if ( FStrEq( pszGroupName, "clip" ) )
+	{
+		return pWeapon && !pWeapon->IsBlastImpactWeapon() && pWeapon->UsesClipsForAmmo1() && pWeapon->GetMaxClip1() > 1;
+	}
+	else if ( FStrEq( pszGroupName, "clip_atomic" ) )
+	{
+		return pWeapon && pWeapon->IsBlastImpactWeapon();
+	}
+
+	// ---------------------------------------------
+	// Multiclass Weapons
+	// ---------------------------------------------
+	else if ( FStrEq( pszGroupName, "shotgun" ) )
+	{
+		return iWeaponID == TF_WEAPON_SHOTGUN_BUILDING_RESCUE || iWeaponID == TF_WEAPON_SHOTGUN_HWG || iWeaponID == TF_WEAPON_SHOTGUN_PRIMARY || iWeaponID == TF_WEAPON_SHOTGUN_PYRO || iWeaponID == TF_WEAPON_SHOTGUN_SOLDIER || iWeaponID == TF_WEAPON_SENTRY_REVENGE;
+	}
+	else if ( FStrEq( pszGroupName, "energy_shotgun" ) ) // Bison/pomson
+	{
+		return iWeaponID == TF_WEAPON_RAYGUN || iWeaponID == TF_WEAPON_DRG_POMSON;
+	}
+	else if ( FStrEq( pszGroupName, "pistol" ) )
+	{
+		return iWeaponID == TF_WEAPON_PISTOL || iWeaponID == TF_WEAPON_PISTOL_SCOUT;
+	}
+
+	// ---------------------------------------------
+	// Scout Weapons
+	// ---------------------------------------------
+	else if ( FStrEq( pszGroupName, "scattergun" ) )
+	{
+		return iWeaponID == TF_WEAPON_SCATTERGUN || iWeaponID == TF_WEAPON_HANDGUN_SCOUT_PRIMARY || iWeaponID == TF_WEAPON_SODA_POPPER || iWeaponID == TF_WEAPON_PEP_BRAWLER_BLASTER;
+	}
+	else if ( FStrEq( pszGroupName, "drink" ) )
+	{
+		return pPlayer->IsPlayerClass( TF_CLASS_SCOUT ) && iWeaponSlot == TF_WPN_TYPE_SECONDARY && pWeapon && pWeapon->HasEffectBarRegeneration();
+	}
+	else if ( FStrEq( pszGroupName, "sandman" ) )
+	{
+		return iWeaponID == TF_WEAPON_BAT_WOOD;
+	}
+	else if ( FStrEq( pszGroupName, "ball" ) )
+	{
+		return iWeaponID == TF_WEAPON_BAT_WOOD || iWeaponID == TF_WEAPON_BAT_GIFTWRAP;
+	}
+	else if ( FStrEq( pszGroupName, "bat" ) )
+	{
+		return pPlayer->IsPlayerClass( TF_CLASS_SCOUT ) && (iWeaponSlot == TF_WPN_TYPE_MELEE || iWeaponSlot == TF_WPN_TYPE_MELEE_ALLCLASS);
+	}
+
+	// ---------------------------------------------
+	// Soldier Weapons
+	// ---------------------------------------------
+	else if ( FStrEq( pszGroupName, "rocket" ) )
+	{
+		return iWeaponID == TF_WEAPON_ROCKETLAUNCHER || iWeaponID == TF_WEAPON_ROCKETLAUNCHER_DIRECTHIT || iWeaponID == TF_WEAPON_PARTICLE_CANNON;
+	}
+	else if ( FStrEq( pszGroupName, "shovel" ) )
+	{
+		return pPlayer->IsPlayerClass( TF_CLASS_SOLDIER ) && (iWeaponSlot == TF_WPN_TYPE_MELEE || iWeaponSlot == TF_WPN_TYPE_MELEE_ALLCLASS);
+	}
+
+	// ---------------------------------------------
+	// Pyro Weapons
+	// ---------------------------------------------
+	else if ( FStrEq( pszGroupName, "flamethrower" ) )
+	{
+		return iWeaponID == TF_WEAPON_FLAMETHROWER;
+	}
+	else if ( FStrEq( pszGroupName, "dragons_fury" ) )
+	{
+		return iWeaponID == TF_WEAPON_FLAME_BALL;
+	}
+	else if ( FStrEq( pszGroupName, "airblast" ) )
+	{
+		return ( iWeaponID == TF_WEAPON_FLAME_BALL || 
+			( iWeaponID == TF_WEAPON_FLAMETHROWER && pWeaponGun && assert_cast< CTFFlameThrower* >( pWeaponGun )->CanAirBlastPushPlayer() ) );
+	}
+	else if ( FStrEq( pszGroupName, "flare" ) )
+	{
+		return iWeaponID == TF_WEAPON_FLAREGUN || iWeaponID == TF_WEAPON_FLAREGUN_REVENGE;
+	}
+	else if ( FStrEq( pszGroupName, "manmelter" ) )
+	{
+		return iWeaponID == TF_WEAPON_FLAREGUN_REVENGE;
+	}
+	else if ( FStrEq( pszGroupName, "gas_passer" ) )
+	{
+		return iWeaponID == TF_WEAPON_JAR_GAS;
+	}
+	else if ( FStrEq( pszGroupName, "rocket_pack" ) )
+	{
+		return bRocketPack;
+	}
+	else if ( FStrEq( pszGroupName, "fireaxe" ) )
+	{
+		return pPlayer->IsPlayerClass( TF_CLASS_PYRO ) && (iWeaponSlot == TF_WPN_TYPE_MELEE || iWeaponSlot == TF_WPN_TYPE_MELEE_ALLCLASS);
+	}
+
+	// ---------------------------------------------
+	// Demo Weapons
+	// ---------------------------------------------
+	else if ( FStrEq( pszGroupName, "grenade" ) )
+	{
+		return iWeaponID == TF_WEAPON_GRENADELAUNCHER || iWeaponID == TF_WEAPON_CANNON;
+	}
+	else if ( FStrEq( pszGroupName, "sticky" ) )
+	{
+		return iWeaponID == TF_WEAPON_PIPEBOMBLAUNCHER;
+	}
+	else if ( FStrEq( pszGroupName, "shield" ) )
+	{
+		return bShield;
+	}
+	else if ( FStrEq( pszGroupName, "sword" ) )
+	{
+		bool bShieldEquipped = false;
+		if ( pPlayer->IsPlayerClass( TF_CLASS_DEMOMAN ) )
+		{
+			for ( int i = 0; i < pPlayer->GetNumWearables(); ++i )
+			{
+				CTFWearableDemoShield *pWearableShield = dynamic_cast< CTFWearableDemoShield* >( pPlayer->GetWearable( i ) );
+				if ( pWearableShield )
+				{
+					bShieldEquipped = true;
+				}
+			}
+		}
+
+		return iWeaponID == TF_WEAPON_SWORD && bShieldEquipped;
+	}
+	else if ( FStrEq( pszGroupName, "bottle" ) )
+	{
+		return pPlayer->IsPlayerClass( TF_CLASS_DEMOMAN ) && (iWeaponSlot == TF_WPN_TYPE_MELEE || iWeaponSlot == TF_WPN_TYPE_MELEE_ALLCLASS);
+	}
+	else if ( FStrEq( pszGroupName, "fires_grenade" ) )
+	{
+		if ( pWeaponGun )
+		{
+			return ( pWeaponGun->GetWeaponProjectileType() == TF_PROJECTILE_PIPEBOMB );
+		}
+
+		return false;
+	}
+
+	// ---------------------------------------------
+	// Heavy Weapons
+	// ---------------------------------------------
+	else if ( FStrEq( pszGroupName, "minigun" ) )
+	{
+		return iWeaponID == TF_WEAPON_MINIGUN;
+	}
+	else if ( FStrEq( pszGroupName, "fists" ) )
+	{
+		return pPlayer->IsPlayerClass( TF_CLASS_HEAVYWEAPONS ) && (iWeaponSlot == TF_WPN_TYPE_MELEE || iWeaponSlot == TF_WPN_TYPE_MELEE_ALLCLASS);
+	}
+
+	// ---------------------------------------------
+	// Engineer Weapons
+	// ---------------------------------------------
+	else if ( FStrEq( pszGroupName, "build_pda" ) )
+	{
+		return iWeaponID == TF_WEAPON_PDA_ENGINEER_BUILD;
+	}
+	else if ( FStrEq( pszGroupName, "wrench" ) )
+	{
+		return pPlayer->IsPlayerClass( TF_CLASS_ENGINEER ) && (iWeaponSlot == TF_WPN_TYPE_MELEE || iWeaponSlot == TF_WPN_TYPE_MELEE_ALLCLASS);
+	}
+
+	// ---------------------------------------------
+	// Medic Weapons
+	// ---------------------------------------------
+	else if ( FStrEq( pszGroupName, "syringe" ) )
+	{
+		return iWeaponID == TF_WEAPON_SYRINGEGUN_MEDIC;
+	}
+	else if ( FStrEq( pszGroupName, "medigun" ) )
+	{
+		return iWeaponID == TF_WEAPON_MEDIGUN;
+	}
+	else if ( FStrEq( pszGroupName, "bonesaw" ) )
+	{
+		return pPlayer->IsPlayerClass( TF_CLASS_MEDIC ) && (iWeaponSlot == TF_WPN_TYPE_MELEE || iWeaponSlot == TF_WPN_TYPE_MELEE_ALLCLASS);
+	}
+
+	// ---------------------------------------------
+	// Sniper Weapons
+	// ---------------------------------------------
+	else if ( FStrEq( pszGroupName, "rifle" ) )
+	{
+		return WeaponID_IsSniperRifle( iWeaponID );
+	}
+	else if ( FStrEq( pszGroupName, "bow" ) )
+	{
+		return iWeaponID == TF_WEAPON_COMPOUND_BOW;
+	}
+	else if ( FStrEq( pszGroupName, "kukri" ) )
+	{
+		return pPlayer->IsPlayerClass( TF_CLASS_SNIPER ) && (iWeaponSlot == TF_WPN_TYPE_MELEE || iWeaponSlot == TF_WPN_TYPE_MELEE_ALLCLASS);
+	}
+
+	// ---------------------------------------------
+	// Spy Weapons
+	// ---------------------------------------------
+	else if ( FStrEq( pszGroupName, "sapper" ) )
+	{
+		return ( pPlayer->IsPlayerClass( TF_CLASS_SPY ) && iWeaponID == TF_WEAPON_BUILDER );
+	}
+	else if ( FStrEq( pszGroupName, "knife" ) )
+	{
+		return pPlayer->IsPlayerClass( TF_CLASS_SPY ) && (iWeaponSlot == TF_WPN_TYPE_MELEE || iWeaponSlot == TF_WPN_TYPE_MELEE_ALLCLASS);
+	}
+
+	return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -173,13 +631,16 @@ void CMannVsMachineUpgradeManager::LoadUpgradesFileFromPath( const char *pszPath
 	}
 
 	m_Upgrades.RemoveAll();
+	m_UpgradeGroups.RemoveAll();
 
 	// Parse upgrades.txt
 	ParseUpgradeBlockForUIGroup( pKV->FindKey( "ItemUpgrades" ), 0 );
 	ParseUpgradeBlockForUIGroup( pKV->FindKey( "PlayerUpgrades" ), 1 );
+	ParseUpgradeGroupBlock( pKV->FindKey( "UpgradeGroups" ) );
 
 	pKV->deleteThis();
 }
+
 
 
 int GetUpgradeStepData( CTFPlayer *pPlayer, int nWeaponSlot, int nUpgradeIndex, int &nCurrentStep, bool &bOverCap )

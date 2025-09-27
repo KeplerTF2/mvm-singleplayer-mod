@@ -1,0 +1,82 @@
+Groups:
+
+value = 0 / Explicitly banned
+value = 1 / Allowed
+value = 2 / All other items must meet this criteria
+
+Items:
+default - Always true (note: making a group called default will have no effect, although default is fine to include within groups)
+
+damaging - A weapon that can deal damage
+shotgun - All class shotgun
+energy_shotgun - Bison/pomson
+pistol - All class pistol
+primary - Primary Weapon
+secondary - Secondary Weapon
+melee - Any melee
+energy - Energy Weapon (bison, cow mangler etc)
+primary_ammo - Has primary ammo
+secondary_ammo - Has primary ammo
+effect_bar - Weapon has effect bar regeneration
+projectile_penetrate - Arrows, bullets, healing bolts
+builder - TF_WEAPON_BUILDER
+spellbook - TF_WEAPON_SPELLBOOK
+jar - Jarate/Mad Milk
+single_reload - Reloads Singly
+buff_item - Buff Banner, Batallions Backup etc
+clip - Weapon has a Regular clip
+clip_atomic - Weapon has a clip that requires atomic clip upgrades
+meter - Item has a meter
+parachute - BASE Jumper
+
+scout
+soldier
+pyro
+demoman
+heavy
+engineer
+medic
+sniper
+spy
+
+scattergun - Scout primary
+drink - recharging Scout secondary
+bat - Scout Melee
+ball - Sandman/Wrap Assassin
+sandman - Sandman
+
+rocket - Soldier Primary
+shovel - Soldier Melee
+
+flamethrower - Pyro primary, excluding dragons fury
+dragons_fury
+airblast - Pyro primary that can airblast
+flare - Flare gun
+manmelter
+gas_passer
+rocket_pack - Thermal Thruster
+fireaxe - Pyro melee
+
+grenade - Grenade Launcher
+sticky - Stickybomb Launcher
+shield
+sword - Swords with a shield equipped
+bottle - Demoman melee
+fires_grenade - Launches pipebombs
+
+minigun
+fists - Heavy Melee
+
+wrench - Engineer Melee
+build_pda - Engineer Build PDA
+
+syringe - Syrine Gun (not crossbow)
+medigun - Medic Secondary
+bonesaw - Medic Melee
+
+rifle - Sniper Rifle
+bow - Huntsman
+kukri - Sniper Melee
+
+sapper
+knife - Spy Melee

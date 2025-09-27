@@ -21509,6 +21509,30 @@ bool CTFGameRules::CanUpgradeWithAttrib( CTFPlayer *pPlayer, int iWeaponSlot, at
 
 	Assert ( pUpgrade );
 
+	// Get the item entity. We use the entity, not the item in the loadout, because we want
+	// the dynamic attributes that have already been purchases and attached.
+	CEconEntity *pEntity;
+	CEconItemView *pCurItemData = CTFPlayerSharedUtils::GetEconItemViewByLoadoutSlot( pPlayer, iWeaponSlot, &pEntity );
+
+	// bottles can only hold things in the appropriate ui group
+	if ( pEntity && dynamic_cast< CTFPowerupBottle *>( pEntity ) )
+	{
+		if ( pUpgrade->nUIGroup != UIGROUP_POWERUPBOTTLE )
+		{
+			return false;
+		}
+	}
+	else if ( pUpgrade->nUIGroup == UIGROUP_POWERUPBOTTLE )
+	{
+		return false;
+	}
+
+	// Get correct attribute group
+	return g_MannVsMachineUpgrades.IsAttribValid( pUpgrade, pPlayer, iWeaponSlot );
+
+	if ( !pCurItemData || !pEntity )
+		return false;
+
 	// Upgrades on players are considered active at all times
 	if ( pUpgrade->nUIGroup == UIGROUP_UPGRADE_ATTACHED_TO_PLAYER )
 	{
@@ -21523,13 +21547,6 @@ bool CTFGameRules::CanUpgradeWithAttrib( CTFPlayer *pPlayer, int iWeaponSlot, at
 
 		return true;
 	}
-
-	// Get the item entity. We use the entity, not the item in the loadout, because we want
-	// the dynamic attributes that have already been purchases and attached.
-	CEconEntity *pEntity;
-	CEconItemView *pCurItemData = CTFPlayerSharedUtils::GetEconItemViewByLoadoutSlot( pPlayer, iWeaponSlot, &pEntity );
-	if ( !pCurItemData || !pEntity )
-		return false;
 
 	// bottles can only hold things in the appropriate ui group
 	if ( dynamic_cast< CTFPowerupBottle *>( pEntity ) )
