@@ -178,7 +178,7 @@
 		}
 		"3136"
 		{
-			"name"	"engy dispenser radius increased"
+			"name"	"engy dispenser radius increased mvm"
 			"attribute_class"	"mult_dispenser_radius"
 			"description_string"	"#Attrib_DispenserRadius_Increased"
 			"description_format"	"value_is_percentage"
