@@ -141,8 +141,6 @@ public:
 	// Hit tracking for achievements
 	virtual void	OnPlayerKill( CTFPlayer *pVictim, const CTakeDamageInfo &info ) OVERRIDE;
 	virtual void	OnBulletFire( int iEnemyPlayersHit ) OVERRIDE;
-
-	void			ExplosiveHeadShot( CTFPlayer *pAttacker, CTFPlayer *pVictim );
 #endif
 	
 	void			Detach( void ) OVERRIDE;

@@ -430,6 +430,8 @@ class CTFWeaponBase : public CBaseCombatWeapon, public IHasOwner, public IHasGen
 
 	void			ApplyItemRegen( void );
 
+	void			ExplosiveHeadShot( CTFPlayer *pAttacker, CTFPlayer *pVictim );
+
 	kill_eater_event_t GetKillEaterKillEventType() const;
 #endif
 

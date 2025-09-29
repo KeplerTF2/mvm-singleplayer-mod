@@ -10737,6 +10737,18 @@ int CTFPlayer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 			}
 		}
 	}
+	else if ( pTFWeapon )
+	{
+		if ( bUsingUpgrades && pTFAttacker && ( IsHeadshot( info.GetDamageCustom() ) || LastHitGroup() == HITGROUP_HEAD ) )
+		{
+			int iExplosiveShot = 0;
+			CALL_ATTRIB_HOOK_INT_ON_OTHER( pTFAttacker, iExplosiveShot, explosive_sniper_shot );
+			if ( iExplosiveShot )
+			{
+				pTFWeapon->ExplosiveHeadShot( pTFAttacker, this );
+			}
+		}
+	}
 
 	// Prevents a sandwich ignore-ammo-while-taking-damage-and-eating alias exploit
 	if ( m_Shared.InCond( TF_COND_TAUNTING ) && m_Shared.GetTauntIndex() == TAUNT_BASE_WEAPON )
