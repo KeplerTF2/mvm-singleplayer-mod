@@ -2,5 +2,352 @@
 
 "items_game"
 {
+	"attributes"
+	{
 
+		"3119"
+		{
+			"name"	"money specialist"
+			"attribute_class"	"money_specialist"
+			"description_format"	"value_is_additive"
+			"description_string"	"#Attrib_MoneySpecialist"
+			"effect_type"			"positive"
+		}
+		"3120"
+		{
+			"name"	"money specialist scout"
+			"attribute_class"	"money_specialist"
+			"description_format"	"value_is_additive"
+			"description_string"	"#Attrib_MoneySpecialistScout"
+			"effect_type"			"positive"
+		}
+		"3121"
+		{
+			"name"	"fire rate bonus mvm"
+			"attribute_class"	"mult_postfiredelay_mvm"
+			"description_string"	"#Attrib_FireRate_Positive"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3122"
+		{
+			"name"	"melee attack rate bonus mvm"
+			"attribute_class"	"mult_postfiredelay_mvm"
+			"description_string"	"#Attrib_MeleeRate_Positive"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3123"
+		{
+			"name"	"damage bonus mvm"
+			"attribute_class"	"mult_dmg"
+			"description_string"	"#Attrib_DamageDone_Positive"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3124"
+		{
+			"name"	"clip size bonus upgrade mvm"
+			"attribute_class"	"mult_clipsize_upgrade"
+			"description_string"	"#Attrib_ClipSize_Positive"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3125"
+		{
+			"name"	"maxammo primary increased mvm"
+			"attribute_class"	"mult_maxammo_primary"
+			"description_string"	"#Attrib_MaxammoPrimary_Increased"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"armory_desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"3126"
+		{
+			"name"	"maxammo secondary increased mvm"
+			"attribute_class"	"mult_maxammo_secondary"
+			"description_string"	"#Attrib_MaxammoSecondary_Increased"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"armory_desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"3127"
+		{
+			"name"	"maxammo grenades1 increased mvm"
+			"attribute_class"	"mult_maxammo_grenades1"
+			"description_string"	"#Attrib_MaxammoGrenades1_Increased"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"armory_desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"3128"
+		{
+			"name"	"maxammo metal increased mvm"
+			"attribute_class"	"mult_maxammo_metal"
+			"description_string"	"#Attrib_MaxammoMetal_Increased"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"armory_desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"3129"
+		{
+			"name"	"bleeding duration mvm"
+			"attribute_class"	"bleeding_duration"
+			"description_string"	"#Attrib_BleedingDuration"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"armory_desc"	"on_hit bleed"
+			"stored_as_integer"	"0"
+		}
+		"3130"
+		{
+			"name"	"heal on kill mvm"
+			"attribute_class"	"heal_on_kill"
+			"description_string"	"#Attrib_HealOnKill"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3131"
+		{
+			"name"	"SRifle Charge rate increased mvm"
+			"attribute_class"	"mult_sniper_charge_per_sec"
+			"description_string"	"#Attrib_SRifleChargeRate_Increased"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3132"
+		{
+			"name"	"effect bar recharge rate increased mvm"
+			"attribute_class"	"effectbar_recharge_rate_mvm"
+			"description_string"	"#Attrib_EffectBarRechargeRateIncreased"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3133"
+		{
+			"name"	"ubercharge rate bonus mvm"
+			"attribute_class"	"mult_medigun_uberchargerate"
+			"description_string"	"#Attrib_UberchargeRate_Positive"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3134"
+		{
+			"name"	"engy building health bonus mvm"
+			"attribute_class"	"mult_engy_building_health"
+			"description_string"	"#Attrib_EngyBuildingHealthBonus"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3135"
+		{
+			"name"	"engy sentry fire rate increased mvm"
+			"attribute_class"	"mult_sentry_firerate_mvm"
+			"description_string"	"#Attrib_SentryFireRate_Increased"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3136"
+		{
+			"name"	"engy dispenser radius increased"
+			"attribute_class"	"mult_dispenser_radius"
+			"description_string"	"#Attrib_DispenserRadius_Increased"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3137"
+		{
+			"name"	"airblast pushback scale mvm"
+			"attribute_class"	"airblast_pushback_scale"
+			"description_string"	"#Attrib_AirBlastPushScale"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3138"
+		{
+			"name"	"applies snare effect mvm"
+			"attribute_class"	"applies_snare_effect_mvm"
+			"description_string"	"#Attrib_AppliesSnareEffect"
+			"description_format"	"value_is_percentage"
+			"hidden"	"1"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3139"
+		{
+			"name"	"charge recharge rate increased mvm"
+			"attribute_class"	"charge_recharge_rate"
+			"description_string"	"#Attrib_ChargeRechargeRateIncreased"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3140"
+		{
+			"name"	"uber duration bonus mvm"
+			"attribute_class"	"add_uber_time"
+			"description_string"	"#Attrib_UberDurationBonus"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3141"
+		{
+			"name"	"weapon burn dmg increased mvm"
+			"attribute_class"	"mult_wpn_burndmg"
+			"description_string"	"#Attrib_WpnBurnDmg_Increased"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3142"
+		{
+			"name"	"weapon burn time increased mvm"
+			"attribute_class"	"mult_wpn_burntime"
+			"description_string"	"#Attrib_WpnBurnTime_Increased"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3143"
+		{
+			"name"	"increase buff duration mvm"
+			"attribute_class"	"mod_buff_duration"
+			"description_string"	"#Attrib_BuffTime_Increased"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3144"
+		{
+			"name"	"Projectile speed increased mvm"
+			"attribute_class"	"mult_projectile_speed"
+			"description_string"	"#Attrib_ProjectileSpeed_Increased"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3145"
+		{
+			"name"	"faster reload rate mvm"
+			"attribute_class"	"fast_reload_mvm"
+			"description_string"	"#Attrib_FastReload"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3146"
+		{
+			"name"	"clip size upgrade atomic mvm"
+			"attribute_class"	"mult_clipsize_upgrade_atomic"
+			"description_string"	"#Attrib_ClipSize_Atomic"
+			"description_format"	"value_is_additive"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3147"
+		{
+			"name"	"damage force reduction mvm"
+			"attribute_class"	"damage_force_reduction_mvm"
+			"description_string"	"#Attrib_DamageForceReduction"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"stored_as_integer"	"0"
+		}
+		"3148"
+		{
+			"name"	"mult_item_meter_charge_rate mvm"
+			"attribute_class"	"mult_item_meter_charge_rate_mvm"
+			"description_string" "#Attrib_ChargeMeterRateMult"
+			"description_format"	"value_is_percentage"
+			"hidden"				"0"
+			"stored_as_integer"	"0"
+		}
+		"3149"
+		{
+			"name"	"dmg taken from fire reduced mvm"
+			"attribute_class"	"mult_dmgtaken_from_fire_mvm"
+			"description_string"	"#Attrib_DmgTaken_From_Fire_Reduced"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"armory_desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"3150"
+		{
+			"name"	"dmg taken from blast reduced mvm"
+			"attribute_class"	"mult_dmgtaken_from_explosions_mvm"
+			"description_string"	"#Attrib_DmgTaken_From_Blast_Reduced"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"armory_desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"3151"
+		{
+			"name"	"dmg taken from bullets reduced mvm"
+			"attribute_class"	"mult_dmgtaken_from_bullets_mvm"
+			"description_string"	"#Attrib_DmgTaken_From_Bullets_Reduced"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"armory_desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+		"3152"
+		{
+			"name"	"dmg taken from crit reduced mvm"
+			"attribute_class"	"mult_dmgtaken_from_crit_mvm"
+			"description_string"	"#Attrib_DmgTaken_From_Crit_Reduced"
+			"description_format"	"value_is_percentage"
+			"hidden"	"0"
+			"effect_type"	"positive"
+			"armory_desc"	"on_wearer"
+			"stored_as_integer"	"0"
+		}
+	}
 }

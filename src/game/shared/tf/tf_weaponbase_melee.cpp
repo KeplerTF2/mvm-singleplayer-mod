@@ -791,7 +791,18 @@ void CTFWeaponBaseMelee::Smack( void )
 
 float CTFWeaponBaseMelee::GetSmackTime( int iWeaponMode )
 {
-	return gpGlobals->curtime + m_pWeaponInfo->GetWeaponData( iWeaponMode ).m_flSmackDelay;
+	float flDelayMult = 1.0f;
+	CALL_ATTRIB_HOOK_FLOAT( flDelayMult, mult_postfiredelay ); // To fix having swing speeds so fast you can't hit anything
+
+	float flDelayMultMvM = 1.0f;
+	CALL_ATTRIB_HOOK_FLOAT( flDelayMultMvM, mult_postfiredelay_mvm );
+
+	flDelayMult /= flDelayMultMvM;
+
+	if ( flDelayMult > 1.f )
+		flDelayMult = 1.f;
+
+	return gpGlobals->curtime + m_pWeaponInfo->GetWeaponData( iWeaponMode ).m_flSmackDelay * flDelayMult;
 }
 
 void CTFWeaponBaseMelee::DoMeleeDamage( CBaseEntity* ent, trace_t& trace )

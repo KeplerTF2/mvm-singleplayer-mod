@@ -1107,6 +1107,9 @@ ConVar tf_competitive_required_late_join_confirm_timeout( "tf_competitive_requir
 
 ConVar tf_gamemode_community ( "tf_gamemode_community", "0", FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DEVELOPMENTONLY );
 
+ConVar tf_mvm_upgrade_mult ( "tf_mvm_upgrade_mult", "1.0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Scales the power of MvM upgrades (e.g. 25% Damage Bonus -> 100% when this is set to 4)");
+ConVar tf_mvm_upgrade_cost_mult ( "tf_mvm_upgrade_cost_mult", "1.0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Scales the cost of MvM upgrades");
+
 ConVar tf_voice_command_suspension_mode( "tf_voice_command_suspension_mode", "2", FCVAR_REPLICATED, "0 = None | 1 = No Voice Commands | 2 = Rate Limited" );
 
 #ifdef GAME_DLL
@@ -3227,6 +3230,11 @@ int CTFGameRules::GetCostForUpgrade( CMannVsMachineUpgrades *pUpgrade, int iItem
 			}
 		}
 	}
+
+	iCost *= tf_mvm_upgrade_cost_mult.GetFloat();
+
+	// Round to the nearest 5 otherwise the cost is ugly
+	iCost = ((iCost + 2) / 5) * 5;
 
 	return iCost;
 }
@@ -7180,6 +7188,10 @@ float CTFGameRules::ApplyOnDamageAliveModifyRules( const CTakeDamageInfo &info, 
 			{
 				// Break the damage down and reassemble
 				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pVictim, flDamageBonus, mult_dmgtaken_from_crit );
+
+				float flCritInverse = 1.f;
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pVictim, flCritInverse, mult_dmgtaken_from_crit_mvm );
+				flDamageBonus /= flCritInverse;
 			}
 
 			// Apply general dmg type reductions. Should we only ever apply one of these? (Flaregun is DMG_BULLET|DMG_IGNITE, for instance)
@@ -7187,6 +7199,10 @@ float CTFGameRules::ApplyOnDamageAliveModifyRules( const CTakeDamageInfo &info, 
 			{
 				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pVictim, flDamageBase, mult_dmgtaken_from_fire );
 				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pVictim->GetActiveWeapon(), flDamageBase, mult_dmgtaken_from_fire_active );
+
+				float flFireInverse = 1.f;
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pVictim, flFireInverse, mult_dmgtaken_from_fire_mvm );
+				flDamageBase /= flFireInverse;
 
 				// Check for medic resist
 				outParams.bPlayDamageReductionSound = CheckMedicResist( TF_COND_MEDIGUN_SMALL_FIRE_RESIST, TF_COND_MEDIGUN_UBER_FIRE_RESIST, pVictim, flRawDamage, flDamageBase, bCrit, flDamageBonus );
@@ -7211,6 +7227,10 @@ float CTFGameRules::ApplyOnDamageAliveModifyRules( const CTakeDamageInfo &info, 
 				{
 					CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pVictim, flDamageBase, mult_dmgtaken_from_explosions );
 
+					float flExplodeInverse = 1.f;
+					CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pVictim, flExplodeInverse, mult_dmgtaken_from_explosions_mvm );
+					flDamageBase /= flExplodeInverse;
+
 					// Check for medic resist
 					outParams.bPlayDamageReductionSound = CheckMedicResist( TF_COND_MEDIGUN_SMALL_BLAST_RESIST, TF_COND_MEDIGUN_UBER_BLAST_RESIST, pVictim, flRawDamage, flDamageBase, bCrit, flDamageBonus );
 				}
@@ -7219,6 +7239,10 @@ float CTFGameRules::ApplyOnDamageAliveModifyRules( const CTakeDamageInfo &info, 
 			if ( info.GetDamageType() & (DMG_BULLET|DMG_BUCKSHOT) )
 			{
 				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pVictim, flDamageBase, mult_dmgtaken_from_bullets );
+
+				float flBulletsInverse = 1.f;
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pVictim, flBulletsInverse, mult_dmgtaken_from_bullets_mvm );
+				flDamageBase /= flBulletsInverse;
 
 				// Check for medic resist
 				outParams.bPlayDamageReductionSound = CheckMedicResist( TF_COND_MEDIGUN_SMALL_BULLET_RESIST, TF_COND_MEDIGUN_UBER_BULLET_RESIST, pVictim, flRawDamage, flDamageBase, bCrit, flDamageBonus );
@@ -21529,386 +21553,6 @@ bool CTFGameRules::CanUpgradeWithAttrib( CTFPlayer *pPlayer, int iWeaponSlot, at
 
 	// Get correct attribute group
 	return g_MannVsMachineUpgrades.IsAttribValid( pUpgrade, pPlayer, iWeaponSlot );
-
-	if ( !pCurItemData || !pEntity )
-		return false;
-
-	// Upgrades on players are considered active at all times
-	if ( pUpgrade->nUIGroup == UIGROUP_UPGRADE_ATTACHED_TO_PLAYER )
-	{
-		switch ( iAttribIndex )
-		{
-		case 113:	// "metal regen"
-			{
-				return ( pPlayer->IsPlayerClass( TF_CLASS_ENGINEER ) );
-			}
-			break;
-		}
-
-		return true;
-	}
-
-	// bottles can only hold things in the appropriate ui group
-	if ( dynamic_cast< CTFPowerupBottle *>( pEntity ) )
-	{
-		if ( pUpgrade->nUIGroup == UIGROUP_POWERUPBOTTLE )
-		{
-			switch ( iAttribIndex )
-			{
-			case 327:	// "building instant upgrade"
-				{
-					return ( pPlayer->IsPlayerClass( TF_CLASS_ENGINEER ) );
-				}
-#ifndef _DEBUG
-			case 480:	// "radius stealth"
-				{
-					return ( pPlayer->IsPlayerClass( TF_CLASS_SPY ) );
-				}
-#endif // !_DEBUG
-		}
-			return true;
-		}
-
-		return false;
-	}
-	else if ( pUpgrade->nUIGroup == UIGROUP_POWERUPBOTTLE )
-	{
-		return false;
-	}
-
-	CTFWeaponBase *pWeapon = dynamic_cast< CTFWeaponBase* > ( pEntity );
-	CTFWeaponBaseGun *pWeaponGun = dynamic_cast< CTFWeaponBaseGun* > ( pEntity );
-	int iWeaponID = ( pWeapon ) ? pWeapon->GetWeaponID() : TF_WEAPON_NONE;
-	CTFWearableDemoShield *pShield = ( pPlayer->IsPlayerClass( TF_CLASS_DEMOMAN ) ) ? dynamic_cast< CTFWearableDemoShield* >( pEntity ) : NULL;
-	bool bShield = ( pShield ) ? true : false;
-	bool bRocketPack = ( iWeaponID == TF_WEAPON_ROCKETPACK );
-
-	if ( iWeaponID == TF_WEAPON_PARACHUTE )
-		return false;
-
-	// Hack to simplify excluding non-weapons from damage upgrades
-	bool bHideDmgUpgrades = iWeaponID == TF_WEAPON_NONE || 
-							iWeaponID == TF_WEAPON_LASER_POINTER || 
-							iWeaponID == TF_WEAPON_MEDIGUN || 
-							iWeaponID == TF_WEAPON_BUFF_ITEM ||
-							iWeaponID == TF_WEAPON_BUILDER ||
-							iWeaponID == TF_WEAPON_PDA_ENGINEER_BUILD ||
-							iWeaponID == TF_WEAPON_INVIS ||
-							iWeaponID == TF_WEAPON_SPELLBOOK ||
-							iWeaponID == TF_WEAPON_JAR_GAS ||
-							iWeaponID == TF_WEAPON_LUNCHBOX ||
-							bRocketPack;
-
-	// What tier upgrade is it?
-	int nQuality = pUpgrade->nQuality;
-
-	// This is bad, but it's hopefully more maintainable than the allowed attributes block for all current & future items
-	switch ( iAttribIndex )
-	{
-	case 2:		// "damage bonus"
-		{
-			if ( bHideDmgUpgrades )
-				return false;
-
-			// Some classes get a weaker dmg upgrade
-			if ( nQuality == MVM_UPGRADE_QUALITY_LOW )
-			{
-				if ( pPlayer->IsPlayerClass( TF_CLASS_DEMOMAN ) && !bShield )
-				{
-					return ( iWeaponSlot == TF_WPN_TYPE_PRIMARY || iWeaponSlot == TF_WPN_TYPE_SECONDARY );
-				}
-				else
-				{
-					return false;
-				}
-			}
-
-			bool bShieldEquipped = false;
-			if ( pPlayer->IsPlayerClass( TF_CLASS_DEMOMAN ) )
-			{
-				for ( int i = 0; i < pPlayer->GetNumWearables(); ++i )
-				{
-					CTFWearableDemoShield *pWearableShield = dynamic_cast< CTFWearableDemoShield* >( pPlayer->GetWearable( i ) );
-					if ( pWearableShield )
-					{
-						bShieldEquipped = true;
-					}
-				}
-			}
-
-			return ( ( iWeaponSlot == TF_WPN_TYPE_PRIMARY && 
-					( pPlayer->IsPlayerClass( TF_CLASS_SCOUT ) || 
-					pPlayer->IsPlayerClass( TF_CLASS_SNIPER ) || 
-					pPlayer->IsPlayerClass( TF_CLASS_SOLDIER ) || 
-					pPlayer->IsPlayerClass( TF_CLASS_PYRO ) ) ) || 
-					( iWeaponID == TF_WEAPON_SWORD && bShieldEquipped ) );
-		}
-		break;
-	case 6:		// "fire rate bonus"
-		{
-			// Heavy's version of firing speed costs more
-			bool bMinigun = iWeaponID == TF_WEAPON_MINIGUN;
-			if ( nQuality == MVM_UPGRADE_QUALITY_LOW )
-			{
-				return bMinigun;
-			}
-			else if ( iWeaponID == TF_WEAPON_GRENADELAUNCHER && pWeapon && pWeapon->AutoFiresFullClipAllAtOnce() )
-			{
-				return false;
-			}
-
-			// Non-melee version
-			return ( dynamic_cast< CTFWeaponBaseMelee* >( pEntity ) == NULL && 
-				iWeaponID != TF_WEAPON_NONE && !bHideDmgUpgrades && 
-				iWeaponID != TF_WEAPON_FLAMETHROWER && 
-				iWeaponID != TF_WEAPON_FLAME_BALL &&
-				!WeaponID_IsSniperRifleOrBow( iWeaponID ) && 
-				!( pWeapon && pWeapon->HasEffectBarRegeneration() ) &&
-				!bMinigun );
-		}
-		break;
-	// case 8:		// "heal rate bonus"
-	case 10:	// "ubercharge rate bonus"
-	case 314:	// "uber duration bonus"
-	case 481:	// "canteen specialist"
-	case 482:	// "overheal expert"
-	case 483:	// "medic machinery beam"
-	case 493:	// "healing mastery"
-		{
-			return ( iWeaponID == TF_WEAPON_MEDIGUN );
-		}
-		break;
-	case 31:	// "critboost on kill"
-		{
-			CTFWeaponBaseMelee *pMelee = dynamic_cast<CTFWeaponBaseMelee *> ( pEntity );
-			return ( pMelee && (
-				pPlayer->IsPlayerClass( TF_CLASS_DEMOMAN ) || 
-				pPlayer->IsPlayerClass( TF_CLASS_SPY ) ) );
-		}
-	case 71:	// weapon burn dmg increased
-	case 73:	// weapon burn time increased
-		{
-			return ( iWeaponID == TF_WEAPON_FLAMETHROWER || iWeaponID == TF_WEAPON_FLAREGUN );
-		}
-		break;
-	case 76:	// "maxammo primary increased"
-		{
-			return ( pWeapon && pWeapon->GetPrimaryAmmoType() == TF_AMMO_PRIMARY && !pWeapon->IsEnergyWeapon() );
-		}
-		break;
-	case 78:	// "maxammo secondary increased"
-		{
-			return ( pWeapon && pWeapon->GetPrimaryAmmoType() == TF_AMMO_SECONDARY && !pWeapon->IsEnergyWeapon() );
-		}
-		break;
-	case 90:	// "SRifle Charge rate increased"
-		{
-			return WeaponID_IsSniperRifle( iWeaponID );
-		}
-		break;
-	case 103:	// "Projectile speed increased"
-		{
-			if ( pWeaponGun )
-			{
-				return ( pWeaponGun->GetWeaponProjectileType() == TF_PROJECTILE_PIPEBOMB );
-			}
-
-			return false;
-		}
-		break;
-	case 149:	// "bleed duration"
-	case 523:	// "arrow mastery"
-		{
-			return ( iWeaponID == TF_WEAPON_COMPOUND_BOW );
-		}
-		break;
-	case 218:	// "mark for death"
-		{
-			return ( iWeaponID == TF_WEAPON_BAT_WOOD );
-		}
-		break;
-	case 249:	// "charge recharge rate increased"
-	case 252:   // "damage force reduction"
-		{
-			return bShield;
-		}
-		break;
-	case 255:	// "airblast pushback scale"
-		{
-			return ( iWeaponID == TF_WEAPON_FLAME_BALL || 
-					 ( iWeaponID == TF_WEAPON_FLAMETHROWER && pWeaponGun && assert_cast< CTFFlameThrower* >( pWeaponGun )->CanAirBlastPushPlayer() ) );
-		}
-		break;
-	case 266:	// "projectile penetration"
-		{
-			if ( pWeaponGun && !bHideDmgUpgrades )
-			{
-				if ( !( pPlayer->IsPlayerClass( TF_CLASS_HEAVYWEAPONS ) && iWeaponSlot == TF_WPN_TYPE_PRIMARY ) )
-				{
-					int iProjectile = pWeaponGun->GetWeaponProjectileType();
-					return ( iProjectile == TF_PROJECTILE_ARROW || iProjectile == TF_PROJECTILE_BULLET || iProjectile == TF_PROJECTILE_HEALING_BOLT || iProjectile == TF_PROJECTILE_FESTIVE_ARROW || iProjectile == TF_PROJECTILE_FESTIVE_HEALING_BOLT );
-				}
-			}
-
-			return false;
-		}
-		break;
-	case 80:	// "maxammo metal increased"
-	case 276:	// "bidirectional teleport"
-	case 286:	// "engy building health bonus"
-	case 343:	// "engy sentry fire rate increased"
-	case 345:	// "engy dispenser radius increased"
-	case 351:	// "engy disposable sentries"
-		{
-			return ( pPlayer->IsPlayerClass( TF_CLASS_ENGINEER ) && iWeaponID == TF_WEAPON_PDA_ENGINEER_BUILD );
-		}
-		break;
-	case 278:	// "effect bar recharge rate increased"
-		{
-			return ( pWeapon && pWeapon->HasEffectBarRegeneration() && iWeaponID != TF_WEAPON_BUILDER && iWeaponID != TF_WEAPON_SPELLBOOK );
-		}
-		break;
-	case 279:	// "maxammo grenades1 increased"
-		{
-			return ( iWeaponID == TF_WEAPON_BAT_WOOD || iWeaponID == TF_WEAPON_BAT_GIFTWRAP );
-		}
-		break;
-	case 313:	// "applies snare effect"
-		{
-// 			if ( nQuality == MVM_UPGRADE_QUALITY_LOW )
-// 			{
-// 				if ( iWeaponID == TF_WEAPON_SNIPERRIFLE )
-// 				{
-// 					CTFSniperRifle *pRifle = static_cast< CTFSniperRifle* >( pEntity );
-// 					return ( pRifle->GetRifleType() == RIFLE_JARATE );
-// 				}
-// 				return false;
-// 			}
-
-			return ( iWeaponID == TF_WEAPON_JAR || iWeaponID == TF_WEAPON_JAR_MILK );
-		}
-		break;
-	case 318:	// "faster reload rate"
-		{
-			return ( ( pWeapon && pWeapon->ReloadsSingly() ) || 
-				WeaponID_IsSniperRifleOrBow( iWeaponID ) || 
-				iWeaponID == TF_WEAPON_FLAREGUN );
-		}
-		break;
-	case 319:	// "increase buff duration"
-		{
-			return ( iWeaponID == TF_WEAPON_BUFF_ITEM );
-		}
-		break;
-	case 320:	// "robo sapper"
-		{
-			return ( pPlayer->IsPlayerClass( TF_CLASS_SPY ) && iWeaponID == TF_WEAPON_BUILDER );
-		}
-		break;
-	case 323:	// "attack projectiles"
-		{
-			return ( pPlayer->IsPlayerClass( TF_CLASS_HEAVYWEAPONS ) && iWeaponSlot == TF_WPN_TYPE_PRIMARY );
-		}
-		break;
-	case 335:		// "clip size bonus upgrade"
-		{
-			return ( pWeapon && !pWeapon->IsBlastImpactWeapon() && pWeapon->UsesClipsForAmmo1() && pWeapon->GetMaxClip1() > 1 
-					 && iWeaponID != TF_WEAPON_FLAREGUN_REVENGE && iWeaponID != TF_WEAPON_SPELLBOOK );
-		}
-		break;
-	case 375:		// "generate rage on damage"
-		{
-			return ( pPlayer->IsPlayerClass( TF_CLASS_HEAVYWEAPONS ) && iWeaponSlot == TF_WPN_TYPE_PRIMARY );
-		}
-		break;
-	case 395:		// "explosive sniper shot"
-		{
-			return ( pPlayer->IsPlayerClass( TF_CLASS_SNIPER ) && iWeaponSlot == TF_WPN_TYPE_PRIMARY && 
-					 pWeaponGun && pWeaponGun->GetWeaponProjectileType() == TF_PROJECTILE_BULLET );
-		}
-		break;
-	case 396:		// "melee attack rate bonus"
-		{
-			bool bAllowed = ( !bRocketPack && 
-							iWeaponID != TF_WEAPON_BAT_WOOD &&
-							iWeaponID != TF_WEAPON_BUFF_ITEM && 
-							!( pWeapon && pWeapon->HasEffectBarRegeneration() ) &&
-							dynamic_cast< CTFWeaponBaseMelee* >( pEntity ) );
-			return bAllowed;
-		}
-		break;
-	case 397:	// "projectile penetration heavy"
-		{
-			if ( !bHideDmgUpgrades )
-			{
-				return ( pPlayer->IsPlayerClass( TF_CLASS_HEAVYWEAPONS ) && iWeaponSlot == TF_WPN_TYPE_PRIMARY );
-			}
-		}
-		break;
-	case 399:	// "armor piercing"
-		{
-			return ( pPlayer->IsPlayerClass( TF_CLASS_SPY ) && iWeaponID == TF_WEAPON_KNIFE );
-		}
-		break;
-	case 440:	// "clip size upgrade atomic"
-		{
-			return pWeapon && pWeapon->IsBlastImpactWeapon();
-		}
-		break;
-	case 484:	// "mad milk syringes"
-		{
-			return ( iWeaponID == TF_WEAPON_SYRINGEGUN_MEDIC );
-		}
-	case 488:	// "rocket specialist"
-		if ( pWeaponGun )
-		{
-			return ( pWeaponGun->GetWeaponProjectileType() == TF_PROJECTILE_ROCKET || pWeaponGun->GetWeaponProjectileType() == TF_PROJECTILE_ENERGY_BALL );
-		}
-	case 499:	// generate rage on heal (shield)
-	case 554:	// revive
-	case 555:	// medigun specialist
-		{
-			return ( iWeaponID == TF_WEAPON_MEDIGUN );
-		}
-	case 871:	// falling_impact_radius_stun
-	case 872:	// thermal_thruster_air_launch
-		{
-			return bRocketPack;
-		}
-	case 874:	// mult_item_meter_charge_rate
-		{
-			attrib_value_t eChargeType = ATTRIBUTE_METER_TYPE_NONE;
-			CALL_ATTRIB_HOOK_INT_ON_OTHER( pEntity, eChargeType, item_meter_charge_type );
-			if ( eChargeType != ATTRIBUTE_METER_TYPE_NONE )
-			{
-				return ( iWeaponID != TF_WEAPON_FLAME_BALL );
-			}
-		}
-	case 875:	// explode_on_ignite
-		{
-			return ( iWeaponID == TF_WEAPON_JAR_GAS );
-		}
-	}
-
-	// All weapon related attributes require an item that does damage
-	if ( pUpgrade->nUIGroup == UIGROUP_UPGRADE_ATTACHED_TO_ITEM )
-	{
-		// All guns
-		if ( pWeaponGun )
-			return ( iWeaponID != TF_WEAPON_NONE && !bHideDmgUpgrades && 
-			!( pWeapon && pWeapon->HasEffectBarRegeneration() ) );
-
-		CTFWeaponBaseMelee *pMelee = dynamic_cast< CTFWeaponBaseMelee* >( pEntity );
-		if ( pMelee )
-		{
-			// All melee weapons except buff banners
-			return ( iWeaponID != TF_WEAPON_BUFF_ITEM && !bHideDmgUpgrades && !bRocketPack );
-		}
-
-		return false;
-	}
-
-	return false;
 }
 
 //-----------------------------------------------------------------------------

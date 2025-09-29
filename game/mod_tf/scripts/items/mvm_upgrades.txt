@@ -13,7 +13,7 @@
 		"1"
 		{
 			// Damage - Normal
-			"attribute"	"damage bonus"		// attrib to hook
+			"attribute"	"damage bonus mvm"		// attrib to hook
 			"icon"		"achievements/tf_demoman_kill_x_with_directpipe"
 			"increment"	"0.25"				// percent
 			"cap"		"2.0"				// percent
@@ -25,7 +25,7 @@
 		"1.1"
 		{
 			// Damage - Low
-			"attribute"	"damage bonus"
+			"attribute"	"damage bonus mvm"
 			"icon"		"achievements/tf_demoman_kill_x_with_directpipe"
 			"increment"	"0.2"
 			"cap"		"1.8"
@@ -37,20 +37,20 @@
 		"2"
 		{
 			// Fire Speed - Normal
-			"attribute"	"fire rate bonus"	// attrib to hook
+			"attribute"	"fire rate bonus mvm"	// attrib to hook
 			"icon"		"achievements/tf_scout_dodge_damage"
-			"increment"	"-0.1"				// percent
-			"cap"		"0.6"				// percent
+			"increment"	"0.1667"				// percent
+			"cap"		"1.6667"				// percent
 			"cost"		"200"				// first tier points/credits cost
 			"group"     "fire_rate"			// where can this upgrade appear
 		}
 		"2.1"
 		{
 			// Fire Speed - Expensive
-			"attribute"	"fire rate bonus"	// attrib to hook
+			"attribute"	"fire rate bonus mvm"	// attrib to hook
 			"icon"		"achievements/tf_scout_dodge_damage"
-			"increment"	"-0.1"				// percent
-			"cap"		"0.6"				// percent
+			"increment"	"0.1667"				// percent
+			"cap"		"1.6667"				// percent
 			"cost"		"350"
 			"quality"	"1"					// allows varying usage cases without cloning attributes
 											// 1 = low, 2 = normal (default), 3 = high
@@ -58,16 +58,16 @@
 		}
 		"2.1"
 		{
-			"attribute"	"melee attack rate bonus"	// attrib to hook
+			"attribute"	"melee attack rate bonus mvm"	// attrib to hook
 			"icon"		"mvm/upgradeicons/upgrade_attackspeed"
-			"increment"	"-0.1"				// percent
-			"cap"		"0.6"				// percent
+			"increment"	"0.1667"				// percent
+			"cap"		"1.6667"				// percent
 			"cost"		"200"				// first tier points/credits cost
 			"group"     "melee_swing"			// where can this upgrade appear
 		}
 		"3"
 		{
-			"attribute"	"clip size bonus upgrade"	// attrib to hook
+			"attribute"	"clip size bonus upgrade mvm"	// attrib to hook
 			"icon"		"achievements/tf_scout_destroy_sentry_with_pistol"
 			"increment"	"0.5"				// percent
 			"cap"		"3.0"				// percent
@@ -76,7 +76,7 @@
 		}
 		"3.1"
 		{
-			"attribute"	"maxammo primary increased"	// attrib to hook
+			"attribute"	"maxammo primary increased mvm"	// attrib to hook
 			"icon"		"achievements/tf_heavy_assist_grind"
 			"increment"	"0.5"				// percent
 			"cap"		"2.5"				// percent
@@ -85,7 +85,7 @@
 		}
 		"3.2"
 		{
-			"attribute"	"maxammo secondary increased"	// attrib to hook
+			"attribute"	"maxammo secondary increased mvm"	// attrib to hook
 			"icon"		"achievements/tf_heavy_assist_grind"
 			"increment"	"0.5"				// percent
 			"cap"		"2.5"				// percent
@@ -94,7 +94,7 @@
 		}
 		"3.3"
 		{
-			"attribute"	"maxammo grenades1 increased"	// attrib to hook
+			"attribute"	"maxammo grenades1 increased mvm"	// attrib to hook
 			"icon"		"achievements/tf_heavy_assist_grind"
 			"increment"	"1.0"				// percent
 			"cap"		"7.0"				// percent
@@ -103,7 +103,7 @@
 		}
 		"3.4"
 		{
-			"attribute"	"maxammo metal increased"	// attrib to hook
+			"attribute"	"maxammo metal increased mvm"	// attrib to hook
 			"icon"		"mvm/upgradeicons/upgrade_metalcapacity"
 			"increment"	"0.5"				// percent
 			"cap"		"3.0"				// percent
@@ -112,7 +112,7 @@
 		}
 		"4"
 		{
-			"attribute"	"bleeding duration"
+			"attribute"	"bleeding duration mvm"
 			"icon"		"achievements/tf_sniper_kill_invis_spy"
 			"increment"	"5"				
 			"cap"		"15"				
@@ -121,7 +121,7 @@
 		}
 		"6"
 		{
-			"attribute"	"heal on kill"
+			"attribute"	"heal on kill mvm"
 			"icon"		"achievements/tf_medic_kill_healed_spy"
 			"increment"	"25"				
 			"cap"		"100"				
@@ -181,7 +181,7 @@
 		}
 		"12"
 		{
-			"attribute"	"SRifle Charge rate increased"
+			"attribute"	"SRifle Charge rate increased mvm"
 			"icon"		"achievements/tf_sniper_kill_at_roundstart"
 			"increment"	"0.25"
 			"cap"		"2.0"
@@ -190,10 +190,10 @@
 		}
 		"13"
 		{
-			"attribute"	"effect bar recharge rate increased"
+			"attribute"	"effect bar recharge rate increased mvm"
 			"icon"		"achievements/tf_win_well_minimumtime"
-			"increment"	"-0.15"
-			"cap"		"0.4"
+			"increment"	"0.375"
+			"cap"		"2.5"
 			"cost"		"250"
 			"group"     "bar_recharge"		// where can this upgrade appear
 		}
@@ -208,7 +208,7 @@
 // 		}
 		"15"
 		{
-			"attribute"	"ubercharge rate bonus"
+			"attribute"	"ubercharge rate bonus mvm"
 			"icon"		"achievements/tf_medic_assist_demoman"
 			"increment"	"0.25"
 			"cap"		"2.0"
@@ -217,7 +217,7 @@
 		}
 		"16"
 		{
-			"attribute" "engy building health bonus"
+			"attribute" "engy building health bonus mvm"
 			"icon"		"achievements/tf_engineer_repair_sentry_w_medic"
 			"increment"	"1.0"
 			"cap"		"4.0"
@@ -226,16 +226,16 @@
 		}
 		"17"
 		{
-			"attribute" "engy sentry fire rate increased"
+			"attribute" "engy sentry fire rate increased mvm"
 			"icon"		"achievements/tf_engineer_sentry_kill_lifetime_grind"
-			"increment"	"-0.1"
-			"cap"		"0.7"
+			"increment"	"0.1125"
+			"cap"		"1.45"
 			"cost"		"350"
 			"group"     "build_pda"			// where can this upgrade appear
 		}
 		"17.2"
 		{
-			"attribute" "engy dispenser radius increased"
+			"attribute" "engy dispenser radius increased mvm"
 			"icon"		"achievements/tf_engineer_dispenser_heal_grind"
 			"increment"	"1.0"
 			"cap"		"4.0"
@@ -254,7 +254,7 @@
 		}
 		"18"
 		{
-			"attribute" "airblast pushback scale"
+			"attribute" "airblast pushback scale mvm"
 			"icon"		"achievements/tf_soldier_crouch_rocket_jump"
 			"increment"	"0.25"
 			"cap"		"2.0"
@@ -273,16 +273,16 @@
 		}
 		"20"
 		{
-			"attribute"	"applies snare effect"
+			"attribute"	"applies snare effect mvm"
 			"icon"		"achievements/tf_sniper_jarate_extinguish"
-			"increment"	"-0.35"			// only 1 increment
-			"cap"		"0.65"			// 
+			"increment"	"0.55"			// only 1 increment
+			"cap"		"1.55"			// 
 			"cost"		"200"
 			"group"     "jar"			// where can this upgrade appear
 		}
 		"21"
 		{
-			"attribute"	"charge recharge rate increased"
+			"attribute"	"charge recharge rate increased mvm"
 			"icon"		"achievements/tf_demoman_charge_kill"
 			"increment"	"1.0"
 			"cap"		"5.0"
@@ -291,7 +291,7 @@
 		}
 		"24"
 		{
-			"attribute"	"uber duration bonus"
+			"attribute"	"uber duration bonus mvm"
 			"icon"		"mvm/upgradeicons/upgrade_medigun_duration"
 			"increment"	"2"
 			"cap"		"6.0"
@@ -310,7 +310,7 @@
 		}
 		"26"
 		{
-			"attribute"	"weapon burn dmg increased"
+			"attribute"	"weapon burn dmg increased mvm"
 			"icon"		"achievements/tf_pyro_burn_spies_as_you"
 			"increment"	"0.25"				// percent
 			"cap"		"2.0"				// percent
@@ -319,7 +319,7 @@
 		}
 		"27"
 		{
-			"attribute"	"weapon burn time increased"
+			"attribute"	"weapon burn time increased mvm"
 			"icon"		"mvm/upgradeicons/upgrade_burn_duration"
 			"increment"	"0.25"				// percent
 			"cap"		"2.0"				// percent
@@ -328,7 +328,7 @@
 		}
 		"28"
 		{
-			"attribute"	"increase buff duration"
+			"attribute"	"increase buff duration mvm"
 			"icon"		"achievements/tf_soldier_buff_teammates"
 			"increment"	"0.25"				// percent
 			"cap"		"1.5"				// percent
@@ -337,7 +337,7 @@
 		}
 		"30"
 		{
-			"attribute"	"Projectile speed increased"	// attrib to hook
+			"attribute"	"Projectile speed increased mvm"	// attrib to hook
 			"icon"		"achievements/tf_soldier_kill_airborne_target_while_airborne"
 			"increment"	"0.25"				// percent
 			"cap"		"2.0"				// percent
@@ -357,10 +357,10 @@
 		}
 		"32"
 		{
-			"attribute"	"faster reload rate"	// attrib to hook
+			"attribute"	"faster reload rate mvm"	// attrib to hook
 			"icon"		"achievements/tf_heavy_survive_crocket"
-			"increment"	"-0.2"				// percent
-			"cap"		"0.4"				// percent
+			"increment"	"0.5"				// percent
+			"cap"		"2.5"				// percent
 			"cost"		"250"				// first tier points/credits cost
 			"group"     "reload"			// where can this upgrade appear
 		}
@@ -431,7 +431,7 @@
 		}
 		"41"
 		{
-			"attribute"	"clip size upgrade atomic"
+			"attribute"	"clip size upgrade atomic mvm"
 			"icon"		"achievements/tf_scout_destroy_sentry_with_pistol"
 			"increment"	"2"
 			"cap"		"8.0"
@@ -496,10 +496,10 @@
 		}
 		"50"
 		{
-			"attribute"	"damage force reduction"
+			"attribute"	"damage force reduction mvm"
 			"icon"		"achievements/tf_soldier_shoot_mult_crits"
-			"increment"	"-0.3"
-			"cap"		"0.1"
+			"increment"	"3.0"
+			"cap"		"10.0"
 			"cost"		"100"
 			"group"     "shield"	
 		}
@@ -525,10 +525,10 @@
 		}
 		"56"
 		{
-			"attribute"	"mult_item_meter_charge_rate"
+			"attribute"	"mult_item_meter_charge_rate mvm"
 			"icon"		"achievements/tf_win_well_minimumtime"
-			"increment"	"-0.15"			// 
-			"cap"		"0.4"			// 
+			"increment"	"0.5"			// 
+			"cap"		"2.5"			// 
 			"cost"		"250"
 			"group"     "item_meter"		// where can this upgrade appear
 		}
@@ -550,34 +550,34 @@
 	{
 		"1"
 		{
-			"attribute"	"dmg taken from fire reduced"
+			"attribute"	"dmg taken from fire reduced mvm"
 			"icon"		"mvm/upgradeicons/upgrade_resistance_fire"
-			"increment"	"-0.25"			// 15% reduction
-			"cap"		"0.25"			// 75% reduction max (.41 because of float rounding when comparing)
+			"increment"	"1.0"			// 15% reduction
+			"cap"		"4.0"			// 75% reduction max (.41 because of float rounding when comparing)
 			"cost"		"150"
 		}
 		"2"
 		{
-			"attribute"	"dmg taken from blast reduced"
+			"attribute"	"dmg taken from blast reduced mvm"
 			"icon"		"achievements/tf_demoman_kill_x_heavies_fullhp_onedet"
-			"increment"	"-0.25"
-			"cap"		"0.25"
+			"increment"	"1.0"
+			"cap"		"4.0"
 			"cost"		"300"
 		}
 		"3"
 		{
-			"attribute"	"dmg taken from bullets reduced"
+			"attribute"	"dmg taken from bullets reduced mvm"
 			"icon"		"mvm/upgradeicons/upgrade_resistance_bullet"
-			"increment"	"-0.25"
-			"cap"		"0.25"
+			"increment"	"1.0"
+			"cap"		"4.0"
 			"cost"		"300"
 		}
 		"4"
 		{
-			"attribute"	"dmg taken from crit reduced"
+			"attribute"	"dmg taken from crit reduced mvm"
 			"icon"		"achievements/tf_soldier_shoot_mult_crits"
-			"increment"	"-0.3"
-			"cap"		"0.1"
+			"increment"	"3.0"
+			"cap"		"10.0"
 			"cost"		"150"
 		}
 		"5"
@@ -614,6 +614,26 @@
 			"cost"		"100"
 			"mult"      "0.5"               // how much does increment and cap change with tf_mvm_upgrade_mult
 		}
+		"12"
+		{
+			"attribute"	"money specialist"
+			"icon"		"achievements/tf_mvm_earn_money_bonus"
+			"increment"	"1"
+			"cap"		"2"
+			"cost"		"200"
+			"group"     "not_scout"
+			"mult"      "0.0"               // how much does increment and cap change with tf_mvm_upgrade_mult
+		}
+		"12.1"
+		{
+			"attribute"	"money specialist scout"
+			"icon"		"achievements/tf_mvm_earn_money_bonus"
+			"increment"	"2"
+			"cap"		"2"
+			"cost"		"300"
+			"group"     "scout"
+			"mult"      "0.0"               // how much does increment and cap change with tf_mvm_upgrade_mult
+		}
 	}
 	
 	"UpgradeGroups"
@@ -627,6 +647,9 @@
 			"flamethrower" "1"
 			"dragons_fury" "1"
 			"sword" "1"
+			"shotgun" "1"
+			"energy_shotgun" "1"
+			"pistol" "1"
 		}
 		"damage_low"
 		{
@@ -797,6 +820,15 @@
 		"engineer"
 		{
 			"engineer" "1"
+		}
+		"scout"
+		{
+			"scout" "1"
+		}
+		"not_scout"
+		{
+			"default" "1"
+			"scout" "0"
 		}
 	}
 }

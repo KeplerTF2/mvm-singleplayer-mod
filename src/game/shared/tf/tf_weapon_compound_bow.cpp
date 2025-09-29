@@ -509,6 +509,10 @@ void CTFCompoundBow::ApplyRefireSpeedModifications( float &flBaseRef )
 {
 	CALL_ATTRIB_HOOK_FLOAT( flBaseRef, fast_reload );
 
+	float flInverseReload = 1.f;
+	CALL_ATTRIB_HOOK_FLOAT( flInverseReload, fast_reload_mvm );
+	flBaseRef /= flInverseReload;
+
 	// Prototype hack
 	CTFPlayer *pPlayer = ToTFPlayer( GetOwner() );
 	if ( pPlayer )

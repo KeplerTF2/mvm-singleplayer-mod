@@ -286,8 +286,12 @@ bool CCurrencyPack::MyTouch( CBasePlayer *pPlayer )
 					return false;
 			}
 
+			int iMoneySpecialist = 0;
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pTFTouchPlayer, iMoneySpecialist, money_specialist );
+			bool bMoneySpecialist = iMoneySpecialist > 0;
+
 			// Scouts gain health when grabbing currency packs
-			if ( pTFTouchPlayer->GetPlayerClass()->GetClassIndex() == TF_CLASS_SCOUT )
+			if ( pTFTouchPlayer->GetPlayerClass()->GetClassIndex() == TF_CLASS_SCOUT || bMoneySpecialist )
 			{
 				const int nCurHealth = pTFTouchPlayer->GetHealth();
 				const int nMaxHealth = pTFTouchPlayer->GetMaxHealth();

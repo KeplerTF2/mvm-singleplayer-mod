@@ -478,13 +478,15 @@ static attrib_definition_index_t ApplyUpgrade_Default( const CMannVsMachineUpgra
 		::FindAttribute_UnsafeBitwiseCast<attrib_value_t>( pEconItemView->GetItemDefinition(), pAttrDef, &fDefaultValue );
 	}
 	
+	int iFormat = pAttrDef->GetDescriptionFormat();
+
 	// if the attribute exists, add the increment (but not if it's a set bonus attribute, they're recreated on each respawn)
-	float flIncrement = upgrade.flIncrement;
+	float flIncrement = GetIncrement( upgrade.flIncrement, upgrade.flCap, upgrade.flMult, iFormat ); //upgrade.flIncrement;
 
 	float flCurrentValue;
 	if ( ::FindAttribute_UnsafeBitwiseCast<attrib_value_t>( pAttrList, pAttrDef, &flCurrentValue ) )
 	{
-		const float flCap = upgrade.flCap;
+		const float flCap = GetCap( upgrade.flIncrement, upgrade.flCap, upgrade.flMult, iFormat ); // upgrade.flCap;
 
 		if ( !bDowngrade && BIsAttributeValueWithDeltaOverCap( flCurrentValue, flIncrement, flCap ) )
 			return INVALID_ATTRIB_DEF_INDEX;

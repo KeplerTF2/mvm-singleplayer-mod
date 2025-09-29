@@ -7847,6 +7847,10 @@ void CTFPlayerShared::UpdateItemChargeMeters()
 			// Modify it?
 			float flMeterChargeRateMod = 1.f;
 			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pItem, flMeterChargeRateMod, mult_item_meter_charge_rate );
+			float flMeterChargeRateModInverse = 1.f;
+			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pItem, flMeterChargeRateModInverse, mult_item_meter_charge_rate_mvm );
+			flMeterChargeRateMod /= flMeterChargeRateModInverse;
+
 			flMeterChargeRate *= flMeterChargeRateMod;
 
 			// Should we even charge?  The item can pause this if it wants
@@ -9045,7 +9049,12 @@ void CTFPlayerShared::RadiusCurrencyCollectionCheck( void )
 		return;
 	
 	bool bScout = m_pOuter->GetPlayerClass()->GetClassIndex() == TF_CLASS_SCOUT;
-	const int nRadiusSqr = bScout ? 288 * 288 : 72 * 72;
+
+	int iMoneySpecialist = 0;
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( m_pOuter, iMoneySpecialist, money_specialist );
+	bool bMoneySpecialist = iMoneySpecialist > 0;
+
+	const int nRadiusSqr = (bScout || bMoneySpecialist) ? 288 * 288 : 72 * 72;
 	Vector vecPos = m_pOuter->GetAbsOrigin();
 
 	// NDebugOverlay::Sphere( vecPos, nRadius, 0, 255, 0, 40, 5 );
@@ -9072,7 +9081,7 @@ void CTFPlayerShared::RadiusCurrencyCollectionCheck( void )
 			continue;
 
 		// Currencypack's seek classes with a large collection radius
-		if ( bScout )
+		if ( bScout || bMoneySpecialist )
 		{
 			bool bFound = false;
 			FOR_EACH_VEC( m_CurrencyPacks, i )
@@ -9131,7 +9140,7 @@ void CTFPlayerShared::RadiusCurrencyCollectionCheck( void )
 		}
 	}
 
-	m_flRadiusCurrencyCollectionTime = bScout ? gpGlobals->curtime + 0.15f : gpGlobals->curtime + 0.25f;
+	m_flRadiusCurrencyCollectionTime = (bScout || bMoneySpecialist) ? gpGlobals->curtime + 0.15f : gpGlobals->curtime + 0.25f;
 }
 
 //-----------------------------------------------------------------------------

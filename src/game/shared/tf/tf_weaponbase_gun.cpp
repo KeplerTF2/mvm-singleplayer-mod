@@ -168,6 +168,10 @@ void CTFWeaponBaseGun::PrimaryAttack( void )
 		float flBaseFireDelay = flFireDelay;
 		CALL_ATTRIB_HOOK_FLOAT( flFireDelay, fast_reload );
 
+		float flInverseReload = 1.f;
+		CALL_ATTRIB_HOOK_FLOAT( flInverseReload, fast_reload_mvm );
+		flFireDelay /= flInverseReload;
+
 		float flPlaybackRate = flFireDelay == 0.f ? 0.f : flBaseFireDelay / flFireDelay;
 
 		if ( pPlayer->GetViewModel( 0 ) )

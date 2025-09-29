@@ -1878,6 +1878,11 @@ float CTFWeaponBase::ApplyFireDelay( float flDelay ) const
 	float flDelayMult = 1.0f;
 	CALL_ATTRIB_HOOK_FLOAT( flDelayMult, mult_postfiredelay );
 
+	float flDelayMultMvM = 1.0f;
+	CALL_ATTRIB_HOOK_FLOAT( flDelayMultMvM, mult_postfiredelay_mvm );
+
+	flDelayMult /= flDelayMultMvM;
+
 	float flComboBoost = 0.0f;
 	CALL_ATTRIB_HOOK_FLOAT( flComboBoost, kill_combo_fire_rate_boost );
 	flComboBoost *= GetKillComboCount();
@@ -2256,6 +2261,10 @@ void CTFWeaponBase::SetReloadTimer( float flReloadTime )
 	CALL_ATTRIB_HOOK_FLOAT( flReloadTime, mult_reload_time_hidden );
 	CALL_ATTRIB_HOOK_FLOAT( flReloadTime, fast_reload );
 	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pPlayer, flReloadTime, hwn_mult_reload_time );
+
+	float flInverseReload = 1.f;
+	CALL_ATTRIB_HOOK_FLOAT( flInverseReload, fast_reload_mvm );
+	flReloadTime /= flInverseReload;
 
 	//int iPanicAttack = 0;
 	//CALL_ATTRIB_HOOK_INT( iPanicAttack, panic_attack );

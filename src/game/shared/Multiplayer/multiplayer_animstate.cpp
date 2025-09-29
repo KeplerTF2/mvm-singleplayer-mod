@@ -198,6 +198,10 @@ void CMultiPlayerAnimState::DoAnimationEvent( PlayerAnimEvent_t event, int nData
 					CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWeapon, flPlaybackRate, mult_reload_time );
 					CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWeapon, flPlaybackRate, mult_reload_time_hidden );
 					CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWeapon, flPlaybackRate, fast_reload );
+
+					float flInverseReload = 1.f;
+					CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWeapon, flInverseReload, fast_reload_mvm );
+					flPlaybackRate /= flInverseReload;
 				}
 				if ( flPlaybackRate > 0.f )
 				{
@@ -236,6 +240,9 @@ void CMultiPlayerAnimState::DoAnimationEvent( PlayerAnimEvent_t event, int nData
 				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWeapon, flPlaybackRate, mult_reload_time );
 				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWeapon, flPlaybackRate, mult_reload_time_hidden );
 				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWeapon, flPlaybackRate, fast_reload );
+				float flInverseReload = 1.f;
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWeapon, flInverseReload, fast_reload_mvm );
+				flPlaybackRate /= flInverseReload;
 			}
 			if ( flPlaybackRate > 0.f )
 			{
@@ -274,6 +281,9 @@ void CMultiPlayerAnimState::DoAnimationEvent( PlayerAnimEvent_t event, int nData
 				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWeapon, flPlaybackRate, mult_reload_time );
 				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWeapon, flPlaybackRate, mult_reload_time_hidden );
 				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWeapon, flPlaybackRate, fast_reload );
+				float flInverseReload = 1.f;
+				CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWeapon, flInverseReload, fast_reload_mvm );
+				flPlaybackRate /= flInverseReload;
 			}
 			if ( flPlaybackRate > 0.f )
 			{

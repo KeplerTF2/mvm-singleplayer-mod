@@ -246,6 +246,7 @@ void CTFKnife::PrimaryAttack( void )
 	if ( ShouldDisguiseOnBackstab() && bSuccessfulBackstab && !pPlayer->HasTheFlag( ignoreTypes, ARRAYSIZE( ignoreTypes ) ) )
 	{
 		// Different rules in MvM when stabbing bots
+		/*
 		bool bDropDisguise = m_hBackstabVictim->IsBot() && ( ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() ) 
 			);
 		if ( bDropDisguise )
@@ -253,9 +254,10 @@ void CTFKnife::PrimaryAttack( void )
 			// Remove the disguise first, otherwise this attribute is overpowered
 			pPlayer->RemoveDisguise();
 		}
+		*/
 
 		// We should very quickly disguise as our victim.
-		const float flDelay = ( bDropDisguise ) ? 1.5f : 0.2f;
+		const float flDelay = 0.2f; // (bDropDisguise) ? 1.5f : 0.2f;
 		SetContextThink( &CTFKnife::DisguiseOnKill, gpGlobals->curtime + flDelay, "DisguiseOnKill" );
 	}
 	else

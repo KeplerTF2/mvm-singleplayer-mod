@@ -364,6 +364,12 @@ void JarExplode( int iEntIndex, CTFPlayer *pAttacker, CBaseEntity *pOriginalWeap
 
 					float flStun = 1.0f;
 					CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pAttacker, flStun, applies_snare_effect );
+
+					float flStunInverse = 1.0f;
+					CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pAttacker, flStunInverse, applies_snare_effect_mvm );
+
+					flStun /= flStunInverse;
+
 					if ( flStun != 1.0f )
 					{
 						pPlayer->m_Shared.StunPlayer( flDuration, flStun, TF_STUN_MOVEMENT, pAttacker );

@@ -711,13 +711,13 @@ int GetUpgradeStepData( CTFPlayer *pPlayer, int nWeaponSlot, int nUpgradeIndex, 
 	}
 
 	// ...
-	const float flIncrement = pMannVsMachineUpgrade->flIncrement;
+	const float flIncrement = GetIncrement( pMannVsMachineUpgrade->flIncrement, pMannVsMachineUpgrade->flCap, pMannVsMachineUpgrade->flMult, nFormat );//pMannVsMachineUpgrade->flIncrement;
 	
 	// Figure out the cap value for this attribute. We start by trusting whatever is specified in our
 	// upgrade config but if we're dealing with an item that specifies different properties at a level
 	// before MvM upgrades (ie., the Soda Popper already specifies "Reload time decreased") then we
 	// need to make sure we consider that the actual high end for UI purposes.
-	const float flCap = pMannVsMachineUpgrade->flCap;
+	const float flCap = GetCap( pMannVsMachineUpgrade->flIncrement, pMannVsMachineUpgrade->flCap, pMannVsMachineUpgrade->flMult, nFormat );//pMannVsMachineUpgrade->flCap;
 
 	if ( BIsAttributeValueWithDeltaOverCap( flCurrentAttribValue, flIncrement, flCap ) )
 	{
@@ -738,4 +738,32 @@ int GetUpgradeStepData( CTFPlayer *pPlayer, int nWeaponSlot, int nUpgradeIndex, 
 
 	// Include the 0th step
 	return nNumSteps;
+}
+
+float GetIncrement( float flIncrement, float flCap, float flMult, int nFormat )
+{
+	if ( nFormat == ATTDESCFORM_VALUE_IS_INVERTED_PERCENTAGE )
+	{
+		return -(1.f - GetCap( flIncrement, flCap, flMult, nFormat )) / ((1.f - flCap) / -flIncrement);
+	}
+	else
+	{
+		return flIncrement * RemapValClamped( flMult, 0.f, 1.f, 1.f, tf_mvm_upgrade_mult.GetFloat() );
+	}
+}
+
+float GetCap( float flIncrement, float flCap, float flMult, int nFormat )
+{
+	if ( nFormat == ATTDESCFORM_VALUE_IS_INVERTED_PERCENTAGE )
+	{
+		return flCap / RemapValClamped( flMult, 0.f, 1.f, 1.f, tf_mvm_upgrade_mult.GetFloat() );
+	}
+	else if ( nFormat == ATTDESCFORM_VALUE_IS_PERCENTAGE )
+	{
+		return (flCap - 1.f) * RemapValClamped( flMult, 0.f, 1.f, 1.f, tf_mvm_upgrade_mult.GetFloat() ) + 1.f;
+	}
+	else
+	{
+		return flCap * RemapValClamped( flMult, 0.f, 1.f, 1.f, tf_mvm_upgrade_mult.GetFloat() );
+	}
 }

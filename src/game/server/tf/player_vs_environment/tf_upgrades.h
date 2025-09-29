@@ -20,6 +20,8 @@ struct UpgradeAttribBlock_t
 	loadout_positions_t iSlot;
 };
 
+extern ConVar tf_mvm_upgrade_mult;
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------

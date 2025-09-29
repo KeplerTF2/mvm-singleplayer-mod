@@ -10020,6 +10020,10 @@ void CTFPlayer::OnDealtDamage( CBaseCombatCharacter *pVictim, const CTakeDamageI
 		// Modify it?
 		float flMeterChargeRateMod = 1.f;
 		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pItem, flMeterChargeRateMod, mult_item_meter_charge_rate );
+		float flMeterChargeRateModInverse = 1.f;
+		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pItem, flMeterChargeRateModInverse, mult_item_meter_charge_rate_mvm );
+		flMeterChargeRateMod /= flMeterChargeRateModInverse;
+
 		flDamageToFullAttr *= flMeterChargeRateMod;
 		
 		m_Shared.SetItemChargeMeter( eLoadoutPosition, m_Shared.GetItemChargeMeter( eLoadoutPosition ) + ( flDamage / flDamageToFullAttr ) * 100.f );
@@ -10452,6 +10456,11 @@ void CTFPlayer::ApplyPushFromDamage( const CTakeDamageInfo &info, Vector vecDir 
 
 		float flDamageForceReduction = 1.f;
 		CALL_ATTRIB_HOOK_FLOAT( flDamageForceReduction, damage_force_reduction );
+
+		float flDamageForceReductionInverse = 1.f;
+		CALL_ATTRIB_HOOK_FLOAT( flDamageForceReductionInverse, damage_force_reduction_mvm );
+		flDamageForceReduction /= flDamageForceReductionInverse;
+
 		vecForce *= flDamageForceReduction;
 	}
 
@@ -12219,6 +12228,16 @@ void CTFPlayer::Event_Killed( const CTakeDamageInfo &info )
 										gameeventmanager->FireEvent( event );
 									}
 								}
+							}
+						}
+						if ( pPlayerAttacker && pMoneyMaker == NULL )
+						{
+							int iMoneySpecialist = 0;
+							CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pPlayerAttacker, iMoneySpecialist, money_specialist );
+
+							if ( iMoneySpecialist == 2 )
+							{
+								pMoneyMaker = pPlayerAttacker;
 							}
 						}
 

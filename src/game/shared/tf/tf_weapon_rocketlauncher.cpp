@@ -683,6 +683,10 @@ bool CTFCrossbow::Holster( CBaseCombatWeapon *pSwitchingTo )
 		CALL_ATTRIB_HOOK_FLOAT( flReloadTime, mult_reload_time_hidden );
 		CALL_ATTRIB_HOOK_FLOAT( flReloadTime, fast_reload );
 
+		float flInverseReload = 1.f;
+		CALL_ATTRIB_HOOK_FLOAT( flInverseReload, fast_reload_mvm );
+		flReloadTime /= flInverseReload;
+
 		float flIdleTime = GetLastPrimaryAttackTime() + flFireDelay + flReloadTime;
 		if ( GetWeaponIdleTime() < flIdleTime )
 		{

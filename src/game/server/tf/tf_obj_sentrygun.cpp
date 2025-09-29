@@ -1270,6 +1270,11 @@ void CObjectSentrygun::Attack()
 		m_flFireRate = 1.f;
 		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( GetOwner(), m_flFireRate, mult_sentry_firerate );
 
+		float m_flFireRateInverse = 1.f;
+		CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( GetOwner(), m_flFireRateInverse, mult_sentry_firerate_mvm );
+
+		m_flFireRate /= m_flFireRateInverse;
+
 		if ( m_bPlayerControlled )
 		{
 			m_flFireRate *= 0.5f;

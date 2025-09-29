@@ -625,7 +625,15 @@ class CTFWeaponBase : public CBaseCombatWeapon, public IHasOwner, public IHasGen
 	// Effect / Regeneration bar handling
 	virtual float	GetEffectBarProgress( void );			// Get the current bar state (will return a value from 0.0 to 1.0)
 	bool			HasEffectBarRegeneration( void ) { return InternalGetEffectBarRechargeTime() > 0; }	// Check the base, not modified by attribute, because attrib may have reduced it to 0.
-	float			GetEffectBarRechargeTime( void ) { float flTime = InternalGetEffectBarRechargeTime(); CALL_ATTRIB_HOOK_FLOAT( flTime, effectbar_recharge_rate ); return flTime; }
+	float			GetEffectBarRechargeTime( void )
+	{ 
+		float flTime = InternalGetEffectBarRechargeTime();
+		CALL_ATTRIB_HOOK_FLOAT( flTime, effectbar_recharge_rate );
+		float flTimeInverse = 1.f;
+		CALL_ATTRIB_HOOK_FLOAT( flTimeInverse, effectbar_recharge_rate_mvm );
+		flTime /= flTimeInverse;
+		return flTime;
+	}
 	void			DecrementBarRegenTime( float flTime ) { m_flEffectBarRegenTime -= flTime; }
 
 	bool			IsHonorBound( void ) const;

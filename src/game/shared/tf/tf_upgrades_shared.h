@@ -14,6 +14,8 @@
 
 class CTFPlayer;
 
+extern ConVar tf_mvm_upgrade_mult;
+
 class CMannVsMachineUpgrades
 {
 public:
@@ -70,5 +72,8 @@ private:
 
 extern CMannVsMachineUpgradeManager g_MannVsMachineUpgrades;
 int GetUpgradeStepData( CTFPlayer *pPlayer, int nWeaponSlot, int nUpgradeIndex, int &nCurrentStep, bool &bOverCap );
+float GetIncrement( float flIncrement, float flCap, float flMult, int nFormat );
+float GetCap( float flIncrement, float flCap, float flMult, int nFormat );
+
 
 #endif // TF_UPGRADES_H

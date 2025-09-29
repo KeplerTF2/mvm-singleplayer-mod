@@ -1160,8 +1160,8 @@ void CHudUpgradePanel::UpdateUpgradeButtons( void )
 
 				pItemSlotBuyPanel->upgradeBuyPanels.Insert( pUpgradeBuyPanel );
 
-				float flValue = pUpgrade->flIncrement;
 				int iFormat = pAttribDef->GetDescriptionFormat();
+				float flValue = GetIncrement( pUpgrade->flIncrement, pUpgrade->flCap, pUpgrade->flMult, iFormat );
 				if ( iFormat == ATTDESCFORM_VALUE_IS_PERCENTAGE || iFormat == ATTDESCFORM_VALUE_IS_INVERTED_PERCENTAGE )
 				{
 					flValue += 1.0;
@@ -1496,9 +1496,8 @@ void CHudUpgradePanel::UpdateMouseOverHighlight( void )
 	CMannVsMachineUpgrades *pUpgrade = &(g_MannVsMachineUpgrades.m_Upgrades[ m_pActiveUpgradeBuyPanel->m_nUpgradeIndex ]);
 	CEconItemAttributeDefinition *pAttribDef = ItemSystem()->GetStaticDataForAttributeByName( pUpgrade->szAttrib );
 
-	float flValue = pUpgrade->flIncrement;
-
 	int iFormat = pAttribDef->GetDescriptionFormat();
+	float flValue = GetIncrement( pUpgrade->flIncrement, pUpgrade->flCap, pUpgrade->flMult, iFormat );
 	if ( iFormat == ATTDESCFORM_VALUE_IS_PERCENTAGE || iFormat == ATTDESCFORM_VALUE_IS_INVERTED_PERCENTAGE )
 	{
 		flValue += 1.0;
