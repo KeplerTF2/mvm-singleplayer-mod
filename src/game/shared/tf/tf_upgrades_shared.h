@@ -60,6 +60,7 @@ public:
 	bool GroupResult( const char* pszGroupName, CTFPlayer *pPlayer, int iWeaponSlot );
 
 	bool IsAttribValid( CMannVsMachineUpgrades *pUpgrade, CTFPlayer *pPlayer, int iWeaponSlot );
+	bool IsAttribValid( const char* pszGroupName, CTFPlayer* pPlayer, int iWeaponSlot );
 
 public:
 	CUtlVector< CMannVsMachineUpgrades > m_Upgrades;

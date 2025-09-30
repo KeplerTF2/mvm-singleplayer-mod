@@ -32,6 +32,16 @@
 			"cost"		"500"
 			"group"     "damage_low"		// where can this upgrade appear
 		}
+		"1.2"
+		{
+			// Damage - Cheap
+			"attribute"	"damage bonus mvm"
+			"icon"		"achievements/tf_demoman_kill_x_with_directpipe"
+			"increment"	"0.25"
+			"cap"		"2.0"
+			"cost"		"300"
+			"group"     "damage_cheap"		// where can this upgrade appear
+		}
 		"2"
 		{
 			// Fire Speed - Normal
@@ -52,7 +62,7 @@
 			"cost"		"350"
 			"quality"	"1"					// allows varying usage cases without cloning attributes
 											// 1 = low, 2 = normal (default), 3 = high
-			"group"     "fire_rate_low"		// where can this upgrade appear
+			"group"     "minigun"		// where can this upgrade appear
 		}
 		"2.1"
 		{
@@ -651,23 +661,44 @@
 			"damaging" "1"
 			"effect_bar" "0"
 			"minigun" "0"
-			"grenade" "0"
-			"sticky" "0"
 			"knife" "0"
+			"damage_low" "0"
+			"damage_cheap" "0"
+			"not_sword" "0"
 		}
 		"damage_low"
 		{
 			"grenade" "1"
 			"sticky" "1"
 		}
-		"damage_melee"
+		"damage_cheap"
 		{
+			"damage_cheap_1" "1"
+			"id_812" "1"
+			"id_833" "1"
+		}
+		"damage_cheap_1"
+		{
+			"medic_primary" "1"
+			"secondary" "1"
+			"sticky" "0"
 			"melee" "1"
-			"sword" "0"
+			"bottle" "0"
 			"rocket_pack" "0"
 			"effect_bar" "0"
 			"buff_item" "0"
 			"parachute" "0"
+			"damaging" "2"
+		}
+		"medic_primary"
+		{
+			"primary" "1"
+			"medic" "2"
+		}
+		"not_sword"
+		{
+			"bottle" "1"
+			"sword" "0"
 		}
 		"fire_rate"
 		{
@@ -679,10 +710,6 @@
 			"dragons_fury" "0"
 			"effect_bar" "0"
 			"minigun" "0"
-		}
-		"fire_rate_low"
-		{
-			"minigun" "1"
 		}
 		"critboost"
 		{

@@ -140,21 +140,29 @@ void CMannVsMachineUpgradeManager::ParseUpgradeGroupBlock( KeyValues *pKV )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-bool CMannVsMachineUpgradeManager::IsAttribValid( CMannVsMachineUpgrades *pUpgrade, CTFPlayer *pPlayer, int iWeaponSlot )
+bool CMannVsMachineUpgradeManager::IsAttribValid( CMannVsMachineUpgrades* pUpgrade, CTFPlayer* pPlayer, int iWeaponSlot )
 {
 	// Search for the upgrade group
 	const char* szGroupName = pUpgrade->szGroup;
 
-	// Default case
-	if ( FStrEq( szGroupName, "default" ) )
-	{
-		return true;
-	}
+	bool bAttribValid = IsAttribValid( szGroupName, pPlayer, iWeaponSlot );
 
+	// User defined group not found, Search for a pre-defined group
+	if ( !bAttribValid )
+		return GroupResult( szGroupName, pPlayer, iWeaponSlot );
+
+	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+bool CMannVsMachineUpgradeManager::IsAttribValid( const char* pszGroupName, CTFPlayer *pPlayer, int iWeaponSlot )
+{
 	// Find a user defined group
 	for ( int i = 0, nCount = m_UpgradeGroups.Count(); i < nCount; ++i )
 	{
-		if ( FStrEq( szGroupName, m_UpgradeGroups[i].szName ) )
+		if ( FStrEq( pszGroupName, m_UpgradeGroups[i].szName ) )
 		{
 			// Now search that group within the upgrade group
 			bool bExclude = false; // Keeps track of values that either say its invalid if cond is true, or is only valid if everything else meets this condition (0/2)
@@ -184,8 +192,7 @@ bool CMannVsMachineUpgradeManager::IsAttribValid( CMannVsMachineUpgrades *pUpgra
 		}
 	}
 
-	// Didn't find one, try using a built in group
-	return GroupResult( szGroupName, pPlayer, iWeaponSlot );
+	return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -273,8 +280,7 @@ bool CMannVsMachineUpgradeManager::GroupResult( const char* pszGroupName, CTFPla
 		iWeaponID == TF_WEAPON_LUNCHBOX ||
 		iWeaponID == TF_WEAPON_JAR ||
 		iWeaponID == TF_WEAPON_JAR_MILK ||
-		bRocketPack
-		&& iWeaponID != TF_WEAPON_CLEAVER;
+		bRocketPack;
 
 	// Prepare for large if statement
 
@@ -574,7 +580,8 @@ bool CMannVsMachineUpgradeManager::GroupResult( const char* pszGroupName, CTFPla
 		return pPlayer->IsPlayerClass( TF_CLASS_SPY ) && (iWeaponSlot == TF_WPN_TYPE_MELEE || iWeaponSlot == TF_WPN_TYPE_MELEE_ALLCLASS);
 	}
 
-	return false;
+	// No pre-defined behaviour, try searching for a user-defined group
+	return IsAttribValid( pszGroupName, pPlayer, iWeaponSlot );
 }
 
 //-----------------------------------------------------------------------------
