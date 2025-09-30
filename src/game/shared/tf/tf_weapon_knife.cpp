@@ -438,6 +438,11 @@ bool CTFKnife::CanPerformBackstabAgainstTarget( CTFPlayer *pTarget )
 
 		if ( pTarget->m_Shared.InCond( TF_COND_SAPPED ) && !pTarget->IsMiniBoss() )
 			return true;
+
+		int iFacestab = 0;
+		CALL_ATTRIB_HOOK_INT( iFacestab, always_backstab_small_bots );
+		if ( iFacestab && !pTarget->IsMiniBoss() )
+			return true;
 	}
 
 	return false;

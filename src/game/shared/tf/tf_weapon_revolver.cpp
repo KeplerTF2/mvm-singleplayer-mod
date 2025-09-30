@@ -82,7 +82,18 @@ bool CTFRevolver::DefaultReload( int iClipSize1, int iClipSize2, int iActivity )
 //-----------------------------------------------------------------------------
 int	CTFRevolver::GetDamageType( void ) const
 {
-	if ( CanHeadshot() && (gpGlobals->curtime - m_flLastAccuracyCheck > 1.f) )
+	float flDelayMult = 1.0f;
+	CALL_ATTRIB_HOOK_FLOAT( flDelayMult, mult_postfiredelay );
+
+	float flDelayMultMvM = 1.0f;
+	CALL_ATTRIB_HOOK_FLOAT( flDelayMultMvM, mult_postfiredelay_mvm );
+
+	flDelayMult /= flDelayMultMvM;
+
+	if ( flDelayMult > 1.f )
+		flDelayMult = 1.f;
+
+	if ( CanHeadshot() && (gpGlobals->curtime - m_flLastAccuracyCheck > flDelayMult) )
 	{
 		int iDamageType = BaseClass::GetDamageType() | DMG_USE_HITLOCATIONS;
 		return iDamageType;
@@ -190,9 +201,20 @@ float CTFRevolver::GetWeaponSpread( void )
 
 	if ( CanHeadshot() )
 	{
+		float flDelayMult = 1.0f;
+		CALL_ATTRIB_HOOK_FLOAT( flDelayMult, mult_postfiredelay );
+
+		float flDelayMultMvM = 1.0f;
+		CALL_ATTRIB_HOOK_FLOAT( flDelayMultMvM, mult_postfiredelay_mvm );
+
+		flDelayMult /= flDelayMultMvM;
+
+		if ( flDelayMult > 1.f )
+			flDelayMult = 1.f;
+
 		// We are highly accurate for our first shot.
 		float flTimeSinceCheck = gpGlobals->curtime - m_flLastAccuracyCheck;
-		fSpread = RemapValClamped( flTimeSinceCheck, 1.0f, 0.5f, 0.f, fSpread );
+		fSpread = RemapValClamped( flTimeSinceCheck, 1.0f * flDelayMult, 0.5f * flDelayMult, 0.f, fSpread );
 	}
 
 	//DevMsg( "Spread: base %3.5f mod: %3.5f\n", BaseClass::GetWeaponSpread(), fSpread );
@@ -212,9 +234,20 @@ void CTFRevolver::GetWeaponCrosshairScale( float &flScale )
 
 	if ( CanHeadshot() )
 	{
+		float flDelayMult = 1.0f;
+		CALL_ATTRIB_HOOK_FLOAT( flDelayMult, mult_postfiredelay );
+
+		float flDelayMultMvM = 1.0f;
+		CALL_ATTRIB_HOOK_FLOAT( flDelayMultMvM, mult_postfiredelay_mvm );
+
+		flDelayMult /= flDelayMultMvM;
+
+		if ( flDelayMult > 1.f )
+			flDelayMult = 1.f;
+
 		float curtime = pTFPlayer->GetFinalPredictedTime() + ( gpGlobals->interpolation_amount * TICK_INTERVAL );
 		float flTimeSinceCheck = curtime - m_flLastAccuracyCheck;
-		flScale = RemapValClamped( flTimeSinceCheck, 1.0f, 0.5f, 0.75f, 2.5f );
+		flScale = RemapValClamped( flTimeSinceCheck, 1.0f * flDelayMult, 0.5f * flDelayMult, 0.75f, 2.5f );
 	}
 	else
 	{

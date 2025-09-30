@@ -372,7 +372,7 @@ void JarExplode( int iEntIndex, CTFPlayer *pAttacker, CBaseEntity *pOriginalWeap
 
 					if ( flStun != 1.0f )
 					{
-						pPlayer->m_Shared.StunPlayer( flDuration, flStun, TF_STUN_MOVEMENT, pAttacker );
+						pPlayer->m_Shared.StunPlayer( flDuration, 1.f - flStun, TF_STUN_MOVEMENT, pAttacker );
 					}
 
 					// Stats tracking?

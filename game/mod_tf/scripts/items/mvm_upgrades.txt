@@ -30,8 +30,6 @@
 			"increment"	"0.2"
 			"cap"		"1.8"
 			"cost"		"500"
-			"quality"	"1"					// allows varying usage cases without cloning attributes
-											// 1 = low, 2 = normal (default), 3 = high
 			"group"     "damage_low"		// where can this upgrade appear
 		}
 		"2"
@@ -275,8 +273,8 @@
 		{
 			"attribute"	"applies snare effect mvm"
 			"icon"		"achievements/tf_sniper_jarate_extinguish"
-			"increment"	"0.55"			// only 1 increment
-			"cap"		"1.55"			// 
+			"increment"	"2.0"			// only 1 increment
+			"cap"		"3.0"			// 
 			"cost"		"200"
 			"group"     "jar"			// where can this upgrade appear
 		}
@@ -408,7 +406,7 @@
 			"increment"	"1"
 			"cap"		"3"
 			"cost"		"350"
-			"group"     "rifle"				// where can this upgrade appear
+			"group"     "headshot"				// where can this upgrade appear
 		}
 		"38"
 		{
@@ -542,6 +540,16 @@
 			"group"     "gas_passer"		// where can this upgrade appear
 			"mult"      "0.0"               // how much does increment and cap change with tf_mvm_upgrade_mult
 		}
+		"58"
+		{
+			"attribute"	"always backstab small bots"
+			"icon"		"achievements/tf_spy_sap_building_backstab_engy"
+			"increment"	"1"			// 
+			"cap"		"1"			// 
+			"cost"		"400"
+			"group"     "knife"		// where can this upgrade appear
+			"mult"      "0.0"       // how much does increment and cap change with tf_mvm_upgrade_mult
+		}
 	}
 	
 	// PLAYER UPGRADES
@@ -640,21 +648,26 @@
 	{
 		"damage"
 		{
-			"scattergun" "1"
-			"rifle" "1"
-			"bow" "1"
-			"rocket" "1"
-			"flamethrower" "1"
-			"dragons_fury" "1"
-			"sword" "1"
-			"shotgun" "1"
-			"energy_shotgun" "1"
-			"pistol" "1"
+			"damaging" "1"
+			"effect_bar" "0"
+			"minigun" "0"
+			"grenade" "0"
+			"sticky" "0"
+			"knife" "0"
 		}
 		"damage_low"
 		{
 			"grenade" "1"
 			"sticky" "1"
+		}
+		"damage_melee"
+		{
+			"melee" "1"
+			"sword" "0"
+			"rocket_pack" "0"
+			"effect_bar" "0"
+			"buff_item" "0"
+			"parachute" "0"
 		}
 		"fire_rate"
 		{
@@ -829,6 +842,17 @@
 		{
 			"default" "1"
 			"scout" "0"
+		}
+		"sword"
+		{
+			"sword" "1"
+		}
+		"headshot"
+		{
+			"rifle" "1"
+			"bow" "1"
+			"id_61" "1"
+			"id_1006" "1"
 		}
 	}
 }

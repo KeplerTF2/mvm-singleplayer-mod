@@ -250,6 +250,14 @@ bool CMannVsMachineUpgradeManager::GroupResult( const char* pszGroupName, CTFPla
 	bool bShield = ( pShield ) ? true : false;
 	bool bRocketPack = ( iWeaponID == TF_WEAPON_ROCKETPACK );
 
+	if ( StringHasPrefix( pszGroupName, "id_" ) )
+	{
+		const char* strID = StringAfterPrefix( pszGroupName, "id_" );
+		int iID = atoi( strID );
+		const CEconItemDefinition *pItemDef = pCurItemData->GetItemDefinition();
+		return pItemDef && pItemDef->GetDefinitionIndex() == iID;
+	}
+
 	// Hack to simplify excluding non-weapons from damage upgrades
 	bool bHideDmgUpgrades = iWeaponID == TF_WEAPON_NONE || 
 		iWeaponID == TF_WEAPON_LASER_POINTER || 
@@ -263,7 +271,8 @@ bool CMannVsMachineUpgradeManager::GroupResult( const char* pszGroupName, CTFPla
 		iWeaponID == TF_WEAPON_LUNCHBOX ||
 		iWeaponID == TF_WEAPON_JAR ||
 		iWeaponID == TF_WEAPON_JAR_MILK ||
-		bRocketPack;
+		bRocketPack
+		&& iWeaponID != TF_WEAPON_CLEAVER;
 
 	// Prepare for large if statement
 
@@ -538,6 +547,10 @@ bool CMannVsMachineUpgradeManager::GroupResult( const char* pszGroupName, CTFPla
 	{
 		return iWeaponID == TF_WEAPON_COMPOUND_BOW;
 	}
+	else if ( FStrEq( pszGroupName, "smg" ) )
+	{
+		return iWeaponID == TF_WEAPON_SMG || iWeaponID == TF_WEAPON_CHARGED_SMG;
+	}
 	else if ( FStrEq( pszGroupName, "kukri" ) )
 	{
 		return pPlayer->IsPlayerClass( TF_CLASS_SNIPER ) && (iWeaponSlot == TF_WPN_TYPE_MELEE || iWeaponSlot == TF_WPN_TYPE_MELEE_ALLCLASS);
@@ -546,6 +559,10 @@ bool CMannVsMachineUpgradeManager::GroupResult( const char* pszGroupName, CTFPla
 	// ---------------------------------------------
 	// Spy Weapons
 	// ---------------------------------------------
+	else if ( FStrEq( pszGroupName, "revolver" ) )
+	{
+		return iWeaponID == TF_WEAPON_REVOLVER;
+	}
 	else if ( FStrEq( pszGroupName, "sapper" ) )
 	{
 		return ( pPlayer->IsPlayerClass( TF_CLASS_SPY ) && iWeaponID == TF_WEAPON_BUILDER );

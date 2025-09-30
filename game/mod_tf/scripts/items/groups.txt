@@ -76,7 +76,11 @@ bonesaw - Medic Melee
 
 rifle - Sniper Rifle
 bow - Huntsman
+smg
 kukri - Sniper Melee
 
+revolver
 sapper
 knife - Spy Melee
+
+id_### - The weapon definition index of the weapon where ### is any integer

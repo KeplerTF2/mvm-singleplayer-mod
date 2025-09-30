@@ -802,7 +802,7 @@ void CTFProjectile_Arrow::ArrowTouch( CBaseEntity *pOther )
 	Vector start = GetAbsOrigin();
 	Vector vel = GetAbsVelocity();
 	trace_t tr;
-	UTIL_TraceLine( start, start + vel * gpGlobals->frametime, CONTENTS_HITBOX|CONTENTS_MONSTER|CONTENTS_SOLID, &filter, &tr );
+	UTIL_TraceLine( start, start + (vel.Normalized() * 64), CONTENTS_HITBOX | CONTENTS_MONSTER | CONTENTS_SOLID, &filter, &tr);
 
 	// If we hit a hitbox, stop tracing.
 	mstudiobbox_t *closest_box = NULL;
@@ -832,8 +832,11 @@ void CTFProjectile_Arrow::ArrowTouch( CBaseEntity *pOther )
 			Ray_t ray;
 			ray.Init( start, position );
 			trace_t tr;
-			IntersectRayWithBox( ray, position+pbox->bbmin, position+pbox->bbmax, 0.f, &tr );
-			float dist = tr.endpos.DistTo( start );
+			IntersectRayWithOBB( ray, position, angles, pbox->bbmin, pbox->bbmax, 0.f, &tr );
+			// We want to calculate closest distance of the arrows trajectory to a hitbox
+			// Instead of just the closest distance of the arrows position to a hitbox
+			// For better hit detection
+			float dist = (tr.endpos - start).Cross( vel ).Length() / vel.Length();
 
 			if ( dist < closest_dist )
 			{
