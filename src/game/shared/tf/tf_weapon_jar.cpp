@@ -978,6 +978,7 @@ CTFProjectile_Cleaver::CTFProjectile_Cleaver()
 	m_bHitPlayer = false;
 	m_bSoundPlayed = false;
 #endif
+	m_HitEntities.Purge();
 }
 
 #ifdef GAME_DLL
@@ -1014,6 +1015,16 @@ void CTFProjectile_Cleaver::OnHit( CBaseEntity *pOther )
 		return;
 	}
 
+	// Don't strike the same target again
+	if ( m_HitEntities.Find( pOther->entindex() ) != m_HitEntities.InvalidIndex() )
+	{
+		return;
+	}
+	else
+	{
+		m_HitEntities.AddToTail( pOther->entindex() );
+	}
+
 	CBaseEntity *pInflictor = GetLauncher();
 
 	float flLifeTime = gpGlobals->curtime - m_flCreationTime;
@@ -1026,9 +1037,12 @@ void CTFProjectile_Cleaver::OnHit( CBaseEntity *pOther )
 		}
 	}
 
+	float flBleedDamage = 4.f;
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( GetLauncher(), flBleedDamage, mult_dmg ); // May replace with a dedicated bleed upgrade later
+
 	// just do the bleed effect directly since the bleed
 	// attribute comes from the inflictor, which is the cleaver.
-	pPlayer->m_Shared.MakeBleed( pOwner, (CTFCleaver *)GetLauncher(), 5.f );
+	pPlayer->m_Shared.MakeBleed( pOwner, (CTFCleaver *)GetLauncher(), 5.f, flBleedDamage );
 
 	// Give 'em a love tap.
 	const trace_t *pTrace = &CBaseEntity::GetTouchTrace();
@@ -1038,7 +1052,11 @@ void CTFProjectile_Cleaver::OnHit( CBaseEntity *pOther )
 	info.SetAttacker( pOwner );
 	info.SetInflictor( pInflictor ); 
 	info.SetWeapon( pInflictor );
-	info.SetDamage( GetDamage() );
+
+	float flDamage = GetDamage();
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( GetLauncher(), flDamage, mult_dmg );
+
+	info.SetDamage( flDamage );
 	info.SetDamageCustom( TF_DMG_CUSTOM_CLEAVER );
 	info.SetDamagePosition( GetAbsOrigin() );
 	int iDamageType = GetDamageType();
@@ -1054,6 +1072,19 @@ void CTFProjectile_Cleaver::OnHit( CBaseEntity *pOther )
 	pPlayer->DispatchTraceAttack( info, dir, pNewTrace );
 	ApplyMultiDamage();
 
+	float flStun = 1.0f;
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( GetLauncher(), flStun, applies_snare_effect );
+
+	float flStunInverse = 1.0f;
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( GetLauncher(), flStunInverse, applies_snare_effect_mvm );
+
+	flStun /= flStunInverse;
+
+	if ( flStun != 1.0f )
+	{
+		pPlayer->m_Shared.StunPlayer( 5.f, 1.f - flStun, TF_STUN_MOVEMENT, pOwner );
+	}
+
 	// sound effects
 	EmitSound_t params;
 	params.m_flSoundTime = 0;
@@ -1067,7 +1098,10 @@ void CTFProjectile_Cleaver::OnHit( CBaseEntity *pOther )
 	CSingleUserRecipientFilter attackerFilter( pOwner );
 	EmitSound( attackerFilter, pOwner->entindex(), params );
 
-	RemoveCleaver();
+	int iPenetrate = 0;
+	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( GetLauncher(), iPenetrate, projectile_penetration );
+	if ( iPenetrate == 0 )
+		RemoveCleaver();
 
 	m_bHitPlayer = true;
 }

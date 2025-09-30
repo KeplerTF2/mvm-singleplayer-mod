@@ -286,7 +286,7 @@
 			"increment"	"2.0"			// only 1 increment
 			"cap"		"3.0"			// 
 			"cost"		"200"
-			"group"     "jar"			// where can this upgrade appear
+			"group"     "snare"			// where can this upgrade appear
 		}
 		"21"
 		{
@@ -674,8 +674,7 @@
 		"damage_cheap"
 		{
 			"damage_cheap_1" "1"
-			"id_812" "1"
-			"id_833" "1"
+			"cleaver" "1"
 		}
 		"damage_cheap_1"
 		{
@@ -731,7 +730,17 @@
 			"secondary_ammo" "1"
 			"energy" "0"
 		}
+		"cleaver"
+		{
+			"id_812" "1"
+			"id_833" "1"
+		}
 		"projectile_penetration"
+		{
+			"projectile_penetration_1" "1"
+			"cleaver" "1"
+		}
+		"projectile_penetration_1"
 		{
 			"projectile_penetrate" "1"
 			"primary" "2"
@@ -783,6 +792,11 @@
 		}
 		"damaging_weapon"
 		{
+			"damaging_weapon_1" "1"
+			"cleaver" "1"
+		}
+		"damaging_weapon_1"
+		{
 			"damaging" "1"
 			"effect_bar" "0"
 			"buff_item" "0"
@@ -800,6 +814,11 @@
 			"bow" "1"
 			"id_61" "1"
 			"id_1006" "1"
+		}
+		"snare"
+		{
+			"jar" "1"
+			"cleaver" "1"
 		}
 	}
 }

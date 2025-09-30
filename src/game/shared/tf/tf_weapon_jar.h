@@ -252,6 +252,9 @@ private:
 	bool m_bHitPlayer;
 	bool m_bSoundPlayed;
 #endif
+
+protected:
+	CUtlVector< int >	m_HitEntities;
 };
 
 void JarExplode( int iEntIndex, CTFPlayer *pAttacker, CBaseEntity *pOriginalWeapon, CBaseEntity *pWeapon, const Vector& vContactPoint, int iTeam, float flRadius, ETFCond cond, float flDuration, const char *pszImpactEffect, const char *pszExplodeSound );
