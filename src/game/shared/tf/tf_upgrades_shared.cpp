@@ -151,6 +151,7 @@ bool CMannVsMachineUpgradeManager::IsAttribValid( CMannVsMachineUpgrades *pUpgra
 		return true;
 	}
 
+	// Find a user defined group
 	for ( int i = 0, nCount = m_UpgradeGroups.Count(); i < nCount; ++i )
 	{
 		if ( FStrEq( szGroupName, m_UpgradeGroups[i].szName ) )
@@ -183,7 +184,8 @@ bool CMannVsMachineUpgradeManager::IsAttribValid( CMannVsMachineUpgrades *pUpgra
 		}
 	}
 
-	return false;
+	// Didn't find one, try using a built in group
+	return GroupResult( szGroupName, pPlayer, iWeaponSlot );
 }
 
 //-----------------------------------------------------------------------------

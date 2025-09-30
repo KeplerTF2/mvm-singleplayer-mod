@@ -684,10 +684,6 @@
 		{
 			"minigun" "1"
 		}
-		"medigun"
-		{
-			"medigun" "1"
-		}
 		"critboost"
 		{
 			"bottle" "1"
@@ -708,30 +704,6 @@
 			"secondary_ammo" "1"
 			"energy" "0"
 		}
-		"rifle"
-		{
-			"rifle" "1"
-		}
-		"fires_grenade"
-		{
-			"fires_grenade" "1"
-		}
-		"bow"
-		{
-			"bow" "1"
-		}
-		"sandman"
-		{
-			"sandman" "1"
-		}
-		"shield"
-		{
-			"shield" "1"
-		}
-		"airblast"
-		{
-			"airblast" "1"
-		}
 		"projectile_penetration"
 		{
 			"projectile_penetrate" "1"
@@ -750,28 +722,12 @@
 			"builder" "0"
 			"spellbook" "0"
 		}
-		"ball"
-		{
-			"ball" "1"
-		}
-		"jar"
-		{
-			"jar" "1"
-		}
 		"reload"
 		{
 			"single_reload" "1"
 			"rifle" "1"
 			"bow" "1"
 			"flare" "1"
-		}
-		"buff_item"
-		{
-			"buff_item" "1"
-		}
-		"sapper"
-		{
-			"sapper" "1"
 		}
 		"heavy_primary"
 		{
@@ -793,34 +749,10 @@
 			"buff_item" "0"
 			"parachute" "0"
 		}
-		"knife"
-		{
-			"knife" "1"
-		}
-		"clip_atomic"
-		{
-			"clip_atomic" "1"
-		}
-		"syringe"
-		{
-			"syringe" "1"
-		}
-		"rocket"
-		{
-			"rocket" "1"
-		}
-		"rocket_pack"
-		{
-			"rocket_pack" "1"
-		}
 		"item_meter"
 		{
 			"meter" "1"
 			"dragons_fury" "0"
-		}
-		"gas_passer"
-		{
-			"gas_passer" "1"
 		}
 		"damaging_weapon"
 		{
@@ -830,22 +762,10 @@
 			"rocket_pack" "0"
 			"parachute" "0"
 		}
-		"engineer"
-		{
-			"engineer" "1"
-		}
-		"scout"
-		{
-			"scout" "1"
-		}
 		"not_scout"
 		{
 			"default" "1"
 			"scout" "0"
-		}
-		"sword"
-		{
-			"sword" "1"
 		}
 		"headshot"
 		{
