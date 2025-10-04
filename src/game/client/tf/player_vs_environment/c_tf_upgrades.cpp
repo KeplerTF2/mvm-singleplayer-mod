@@ -1108,7 +1108,7 @@ void CHudUpgradePanel::UpdateUpgradeButtons( void )
 				pItemSlotBuyPanel->upgradeBuyPanels[ nUpgrade ]->MarkForDeletion();
 			}
 
-			int iAvailableSlots = 3;
+			int iAvailableSlots = 4;
 			int iSlotsUsed = 0;
 
 			pItemSlotBuyPanel->upgradeBuyPanels.RemoveAll();

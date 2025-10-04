@@ -21560,6 +21560,11 @@ bool CTFGameRules::CanUpgradeWithAttrib( CTFPlayer *pPlayer, int iWeaponSlot, at
 //-----------------------------------------------------------------------------
 void CTFGameRules::RandomiseUpgradeOrder()
 {
+	m_nUpgradeOrder.Purge();
+	m_nUpgradeOrderSecondary.Purge();
+	m_nUpgradeOrderMelee.Purge();
+	m_nUpgradeOrderPDA.Purge();
+
 	FOR_EACH_VEC( g_MannVsMachineUpgrades.m_Upgrades, i )
 	{
 		m_nUpgradeOrder.AddToTail( i );
