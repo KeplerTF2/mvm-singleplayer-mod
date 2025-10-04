@@ -1233,6 +1233,14 @@ private:
 	float		m_flCTFCaptureBonusTime;
 public:
 
+	// MvM Roguelike
+	CUtlVector< int > m_nUpgradeOrder;
+	CUtlVector< int > m_nUpgradeOrderSecondary;
+	CUtlVector< int > m_nUpgradeOrderMelee;
+	CUtlVector< int > m_nUpgradeOrderPDA;
+
+	void RandomiseUpgradeOrder();
+
 	bool m_bControlSpawnsPerTeam[ MAX_TEAMS ][ MAX_CONTROL_POINTS ];
 	int	 m_iPreviousRoundWinners;
 

@@ -21556,6 +21556,24 @@ bool CTFGameRules::CanUpgradeWithAttrib( CTFPlayer *pPlayer, int iWeaponSlot, at
 }
 
 //-----------------------------------------------------------------------------
+// TODO: Add a rarity system
+//-----------------------------------------------------------------------------
+void CTFGameRules::RandomiseUpgradeOrder()
+{
+	FOR_EACH_VEC( g_MannVsMachineUpgrades.m_Upgrades, i )
+	{
+		m_nUpgradeOrder.AddToTail( i );
+		m_nUpgradeOrderSecondary.AddToTail( i );
+		m_nUpgradeOrderMelee.AddToTail( i );
+		m_nUpgradeOrderPDA.AddToTail( i );
+	}
+	m_nUpgradeOrder.Shuffle();
+	m_nUpgradeOrderSecondary.Shuffle();
+	m_nUpgradeOrderMelee.Shuffle();
+	m_nUpgradeOrderPDA.Shuffle();
+}
+
+//-----------------------------------------------------------------------------
 // 
 //-----------------------------------------------------------------------------
 int CTFGameRules::GetUpgradeTier( int iUpgrade )

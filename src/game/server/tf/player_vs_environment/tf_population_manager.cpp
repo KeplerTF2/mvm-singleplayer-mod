@@ -481,6 +481,11 @@ bool CPopulationManager::Initialize( void )
 
 	m_nRespecsAwardedInWave = 0;
 
+	if ( TFGameRules() )
+	{
+		TFGameRules()->RandomiseUpgradeOrder();
+	}
+
 	return true;
 }
 
@@ -1167,6 +1172,11 @@ void CPopulationManager::JumpToWave( uint32 waveNumber, float fCleanMoneyPercent
 	}
 
 	ResetRespecPoints();
+
+	if ( TFGameRules() )
+	{
+		TFGameRules()->RandomiseUpgradeOrder();
+	}
 }
 
 //-------------------------------------------------------------------------
@@ -1256,6 +1266,11 @@ void CPopulationManager::WaveEnd( bool bSuccess )
 	{
 		TFGameRules()->State_Transition( GR_STATE_BETWEEN_RNDS );
 		TFObjectiveResource()->SetMannVsMachineBetweenWaves( true );
+	}
+
+	if ( TFGameRules() )
+	{
+		TFGameRules()->RandomiseUpgradeOrder();
 	}
 }
 

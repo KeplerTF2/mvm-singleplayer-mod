@@ -1113,18 +1113,14 @@ void CHudUpgradePanel::UpdateUpgradeButtons( void )
 
 			pItemSlotBuyPanel->upgradeBuyPanels.RemoveAll();
 
-			// TO-DO: Move this to player shared, so that we can randomize at specific times
-			CUtlVector< int > randomVector;
-
-			FOR_EACH_VEC( g_MannVsMachineUpgrades.m_Upgrades, i )
+			if ( TFGameRules()->m_nUpgradeOrder.Count() == 0 )
 			{
-				randomVector.AddToTail( i );
+				TFGameRules()->RandomiseUpgradeOrder();
 			}
-			randomVector.Shuffle();
 
-			FOR_EACH_VEC( randomVector, j )
+			FOR_EACH_VEC( TFGameRules()->m_nUpgradeOrder, j )
 			{
-				int i = randomVector[ j ];
+				int i = TFGameRules()->m_nUpgradeOrder[ j ];
 				CMannVsMachineUpgrades *pUpgrade = &(g_MannVsMachineUpgrades.m_Upgrades[ i ]);
 
 				// Don't create button if it belongs to the wrong group
