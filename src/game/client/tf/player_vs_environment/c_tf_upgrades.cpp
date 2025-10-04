@@ -658,6 +658,9 @@ void CHudUpgradePanel::FireGameEvent( IGameEvent *event )
 	{
 		// Doing this prevents stale data after changing to a map that uses different upgrades data.
 		UpdateModelPanels();
+
+		// Randomize upgrade order
+		g_MannVsMachineUpgrades.m_Upgrades.Shuffle();
 	}
 	else if ( FStrEq( event->GetName(), "upgrades_file_changed" ) )
 	{
@@ -672,6 +675,14 @@ void CHudUpgradePanel::FireGameEvent( IGameEvent *event )
 			g_MannVsMachineUpgrades.LoadUpgradesFileFromPath( pszPath );
 			UpdateModelPanels();
 		}
+
+		// Randomize upgrade order
+		g_MannVsMachineUpgrades.m_Upgrades.Shuffle();
+	}
+	else if ( FStrEq( event->GetName(), "mvm_wave_complete" ) )
+	{
+		// Randomize upgrade order
+		g_MannVsMachineUpgrades.m_Upgrades.Shuffle();
 	}
 }
 
@@ -1097,10 +1108,23 @@ void CHudUpgradePanel::UpdateUpgradeButtons( void )
 				pItemSlotBuyPanel->upgradeBuyPanels[ nUpgrade ]->MarkForDeletion();
 			}
 
+			int iAvailableSlots = 3;
+			int iSlotsUsed = 0;
+
 			pItemSlotBuyPanel->upgradeBuyPanels.RemoveAll();
+
+			// TO-DO: Move this to player shared, so that we can randomize at specific times
+			CUtlVector< int > randomVector;
 
 			FOR_EACH_VEC( g_MannVsMachineUpgrades.m_Upgrades, i )
 			{
+				randomVector.AddToTail( i );
+			}
+			randomVector.Shuffle();
+
+			FOR_EACH_VEC( randomVector, j )
+			{
+				int i = randomVector[ j ];
 				CMannVsMachineUpgrades *pUpgrade = &(g_MannVsMachineUpgrades.m_Upgrades[ i ]);
 
 				// Don't create button if it belongs to the wrong group
@@ -1123,6 +1147,13 @@ void CHudUpgradePanel::UpdateUpgradeButtons( void )
 				if ( !TFGameRules()->CanUpgradeWithAttrib( m_hPlayer, pItemSlotBuyPanel->nSlot, pAttribDef->GetDefinitionIndex(), pUpgrade ) )
 				{
 					continue;
+				}
+
+				iSlotsUsed++;
+
+				if ( iSlotsUsed > iAvailableSlots )
+				{
+					break;
 				}
 
 				int nCost = pItemSlotBuyPanel->nSlot >= 0 ? 
