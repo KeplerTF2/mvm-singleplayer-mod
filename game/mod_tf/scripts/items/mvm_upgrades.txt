@@ -675,6 +675,10 @@
 		{
 			"damage_cheap_1" "1"
 			"cleaver" "1"
+			"minigun" "0"
+			"knife" "0"
+			"damage_low" "0"
+			"not_sword" "0"
 		}
 		"damage_cheap_1"
 		{

@@ -926,7 +926,7 @@ void CTFTankBoss::ModifyDamage( CTakeDamageInfo *info ) const
 	if ( pWeapon && pWeapon->GetWeaponID() == TF_WEAPON_MINIGUN )
 	{
 		// miniguns are crazy powerful when all bullets always hit
-		const float minigunFactor = 0.25f;
+		const float minigunFactor = 0.5f;
 		info->SetDamage( info->GetDamage() * minigunFactor );
 	}
 }

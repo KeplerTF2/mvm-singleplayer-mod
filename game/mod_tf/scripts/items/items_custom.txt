@@ -200,7 +200,7 @@
 		{
 			"name"	"applies snare effect mvm"
 			"attribute_class"	"applies_snare_effect_mvm"
-			"description_string"	"#Attrib_AppliesSnareEffect"
+			"description_string"	"#Attrib_AppliesSnareEffectMvM"
 			"description_format"	"value_is_percentage"
 			"hidden"	"0"
 			"effect_type"	"positive"

@@ -1107,7 +1107,7 @@ ConVar tf_competitive_required_late_join_confirm_timeout( "tf_competitive_requir
 
 ConVar tf_gamemode_community ( "tf_gamemode_community", "0", FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DEVELOPMENTONLY );
 
-ConVar tf_mvm_upgrade_mult ( "tf_mvm_upgrade_mult", "1.0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Scales the power of MvM upgrades (e.g. 25% Damage Bonus -> 100% when this is set to 4)");
+ConVar tf_mvm_upgrade_mult ( "tf_mvm_upgrade_mult", "6.0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Scales the power of MvM upgrades (e.g. 25% Damage Bonus -> 100% when this is set to 4)");
 ConVar tf_mvm_upgrade_cost_mult ( "tf_mvm_upgrade_cost_mult", "1.0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Scales the cost of MvM upgrades");
 
 ConVar tf_voice_command_suspension_mode( "tf_voice_command_suspension_mode", "2", FCVAR_REPLICATED, "0 = None | 1 = No Voice Commands | 2 = Rate Limited" );
